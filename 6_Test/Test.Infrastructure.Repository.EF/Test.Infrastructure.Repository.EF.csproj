@@ -55,11 +55,20 @@
     <Compile Include="SqliteTest.cs" />
     <Compile Include="SqlServerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PersonDataService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository\Framework.Infrastructure.Repository.csproj">
       <Project>{ec6c563d-04ac-4eb0-b570-4c458746f230}</Project>
       <Name>Framework.Infrastructure.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Infrastructure.Repository.EF.Config\Test.Infrastructure.Repository.EF.Config.csproj">
+      <Project>{287b9976-e6e9-4579-b7da-38b11ecd185a}</Project>
+      <Name>Test.Infrastructure.Repository.EF.Config</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Test.Infrastructure.Repository.EF.Metadata\Test.Infrastructure.Repository.EF.Metadata.csproj">
+      <Project>{7b680a68-f44f-4ac9-983e-075dd46ddbbc}</Project>
+      <Name>Test.Infrastructure.Repository.EF.Metadata</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

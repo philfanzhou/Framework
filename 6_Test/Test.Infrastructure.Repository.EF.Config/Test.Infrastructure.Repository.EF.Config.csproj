@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnouncementConfig.cs" />
+    <Compile Include="DatabaseHelper.cs" />
+    <Compile Include="TestSqlServerDbContext.cs" />
     <Compile Include="PersonConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -57,6 +59,22 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Container\Framework.Infrastructure.Container.csproj">
+      <Project>{f3290e90-ff3b-41e3-9369-2dd497a6054b}</Project>
+      <Name>Framework.Infrastructure.Container</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository.EF.SQLServer\Framework.Infrastructure.Repository.EF.SQLServer.csproj">
+      <Project>{3a849b17-5054-454b-9405-5422b45b714d}</Project>
+      <Name>Framework.Infrastructure.Repository.EF.SQLServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository.EF\Framework.Infrastructure.Repository.EF.csproj">
+      <Project>{56a6cf15-cbcd-416e-9783-40ca8c875175}</Project>
+      <Name>Framework.Infrastructure.Repository.EF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository\Framework.Infrastructure.Repository.csproj">
+      <Project>{ec6c563d-04ac-4eb0-b570-4c458746f230}</Project>
+      <Name>Framework.Infrastructure.Repository</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Test.Infrastructure.Repository.EF.Metadata\Test.Infrastructure.Repository.EF.Metadata.csproj">
       <Project>{7b680a68-f44f-4ac9-983e-075dd46ddbbc}</Project>
       <Name>Test.Infrastructure.Repository.EF.Metadata</Name>

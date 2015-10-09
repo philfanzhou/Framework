@@ -58,6 +58,11 @@
             return this._context.Get<TEntity>(id);
         }
 
+        public virtual TEntity Get(int id)
+        {
+            return this._context.Get<TEntity>(id);
+        }
+
         public virtual TEntity Single(ISpecification<TEntity> specification)
         {
             return this._context.Single(specification);

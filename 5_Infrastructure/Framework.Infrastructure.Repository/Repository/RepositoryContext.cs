@@ -171,6 +171,21 @@
             }
         }
 
+        internal TEntity Get<TEntity>(int id)
+            where TEntity : class
+        {
+            ThrowIfDisposed();
+
+            try
+            {
+                return DoGet<TEntity>(id);
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryException(ex.Message, ex);
+            }
+        }
+
         internal TEntity Single<TEntity>(ISpecification<TEntity> specification)
             where TEntity : class
         {
@@ -264,6 +279,9 @@
             where TEntity : class;
 
         protected abstract TEntity DoGet<TEntity>(string id)
+            where TEntity : class;
+
+        protected abstract TEntity DoGet<TEntity>(int id)
             where TEntity : class;
 
         protected abstract TEntity DoSingle<TEntity>(ISpecification<TEntity> specification)

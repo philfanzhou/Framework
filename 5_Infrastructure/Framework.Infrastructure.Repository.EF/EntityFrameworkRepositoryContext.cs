@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading;
@@ -61,6 +62,11 @@ namespace Framework.Infrastructure.Repository.EF
         protected override TEntity DoGet<TEntity>(string id)
         {
             return GetSet<TEntity>().Find(id);
+        }
+
+        protected override TEntity DoGet<TEntity>(int id)
+        {
+            return GetSet< TEntity > ().Find(id);
         }
 
         protected override TEntity DoSingle<TEntity>(ISpecification<TEntity> specification)
