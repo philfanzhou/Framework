@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Test.Infrastructure.Repository.EF
 {
     [TestClass]
-    public class UnitTest1
+    public class SqlServerTest
     {
         [TestMethod]
         public void TestMethod1()
