@@ -49,11 +49,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnnouncementConfig.cs" />
+    <Compile Include="DbConfig\AnnouncementConfig.cs" />
     <Compile Include="DatabaseHelper.cs" />
-    <Compile Include="TestSqlServerDbContext.cs" />
-    <Compile Include="PersonConfig.cs" />
+    <Compile Include="DbContext\TestMySqlDbContext.cs" />
+    <Compile Include="DbContext\TestSqlServerDbContext.cs" />
+    <Compile Include="DbConfig\PersonConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DbContext\TestSqliteDbContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -62,6 +64,14 @@
     <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Container\Framework.Infrastructure.Container.csproj">
       <Project>{f3290e90-ff3b-41e3-9369-2dd497a6054b}</Project>
       <Name>Framework.Infrastructure.Container</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository.EF.MySql\Framework.Infrastructure.Repository.EF.MySql.csproj">
+      <Project>{a03fe3dc-0f2a-4c1d-9b8d-56c971be78ef}</Project>
+      <Name>Framework.Infrastructure.Repository.EF.MySql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository.EF.SQLite\Framework.Infrastructure.Repository.EF.SQLite.csproj">
+      <Project>{fafc5bb1-85f0-4e93-9744-9ed3bce2423c}</Project>
+      <Name>Framework.Infrastructure.Repository.EF.SQLite</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository.EF.SQLServer\Framework.Infrastructure.Repository.EF.SQLServer.csproj">
       <Project>{3a849b17-5054-454b-9405-5422b45b714d}</Project>
@@ -80,6 +90,7 @@
       <Name>Test.Infrastructure.Repository.EF.Metadata</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

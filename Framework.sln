@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.MemoryMappedFile.Test", "6_Test\Framework.Infrastructure.MemoryMappedFile.Test\Framework.Infrastructure.MemoryMappedFile.Test.csproj", "{425C57E2-B5B5-4CF7-BAFA-C654FD5762B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReleaseProject", "ReleaseProject\ReleaseProject.csproj", "{9261B9C1-7A7A-4D10-9FB6-BFC65D65BBA6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "7_SqliteDemo", "7_SqliteDemo", "{040EC018-9ED1-4C41-953E-D2D151CD1DA3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.EntityFramework.Sqlite", "7_SqliteDemo\Framework.EntityFramework.Sqlite.csproj", "{C6C6B9FE-20D0-482D-B2DE-AE1D842665E7}"
@@ -59,10 +57,6 @@ Global
 		{425C57E2-B5B5-4CF7-BAFA-C654FD5762B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{425C57E2-B5B5-4CF7-BAFA-C654FD5762B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{425C57E2-B5B5-4CF7-BAFA-C654FD5762B9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9261B9C1-7A7A-4D10-9FB6-BFC65D65BBA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9261B9C1-7A7A-4D10-9FB6-BFC65D65BBA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9261B9C1-7A7A-4D10-9FB6-BFC65D65BBA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9261B9C1-7A7A-4D10-9FB6-BFC65D65BBA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6C6B9FE-20D0-482D-B2DE-AE1D842665E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6C6B9FE-20D0-482D-B2DE-AE1D842665E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6C6B9FE-20D0-482D-B2DE-AE1D842665E7}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -19,5 +19,26 @@ namespace Test.Infrastructure.Repository.EF.Config
                 dbContext.Database.Create();
             }
         }
+
+        public static void InitializeSqlite(bool clearDatabase)
+        {
+            ContainerHelper.Instance
+                .RegisterType<IRepositoryContext,
+                EntityFrameworkRepositoryContext<TestSqliteDbContext>>();
+        }
+
+        public static void InitializeMySql(bool clearDatabase)
+        {
+            ContainerHelper.Instance
+                .RegisterType<IRepositoryContext,
+                EntityFrameworkRepositoryContext<TestSqlServerDbContext>>();
+
+            if (clearDatabase)
+            {
+                TestSqlServerDbContext dbContext = new TestSqlServerDbContext();
+                dbContext.Database.Delete();
+                dbContext.Database.Create();
+            }
+        }
     }
 }
