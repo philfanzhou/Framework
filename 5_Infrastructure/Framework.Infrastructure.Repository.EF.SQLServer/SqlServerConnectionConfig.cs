@@ -1,8 +1,8 @@
-﻿namespace Framework.Infrastructure.Repository.EntityFramework
+﻿namespace Framework.Infrastructure.Repository.EF.SQLServer
 {
     using System.Text;
 
-    public class ConnectionConfig
+    public class SqlServerConnectionConfig
     {
         public string Server { get; set; }
         public string Port { get; set; }

@@ -1,11 +1,11 @@
-﻿namespace Framework.Infrastructure.Repository.EntityFramework
-{
-    using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.Linq;
-    using System.Threading;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading;
 
-    internal class EntityFrameworkRepositoryContext<TDbContext> : RepositoryContext
+namespace Framework.Infrastructure.Repository.EF
+{
+    public class EntityFrameworkRepositoryContext<TDbContext> : RepositoryContext
         where TDbContext : DbContext
     {
         #region Fields

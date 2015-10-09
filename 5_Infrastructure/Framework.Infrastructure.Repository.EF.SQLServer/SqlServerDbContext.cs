@@ -1,18 +1,18 @@
-﻿namespace Framework.Infrastructure.Repository.EntityFramework
-{
-    using System.Data.Entity;
-    using System.Data.Entity.SqlServer;
+﻿using System.Data.Entity;
+using System.Data.Entity.SqlServer;
 
+namespace Framework.Infrastructure.Repository.EF.SQLServer
+{
     [DbConfigurationType(typeof(SqlServerDbConfiguration))] 
     public class SqlServerDbContext : DbContext
     {
-        public SqlServerDbContext(ConnectionConfig dbConnection)
+        public SqlServerDbContext(SqlServerConnectionConfig dbConnection)
             : base(dbConnection.ToString())
         {
         }
     }
 
-    public class SqlServerDbConfiguration : DbConfiguration
+    internal class SqlServerDbConfiguration : DbConfiguration
     {
         public SqlServerDbConfiguration()
         {
