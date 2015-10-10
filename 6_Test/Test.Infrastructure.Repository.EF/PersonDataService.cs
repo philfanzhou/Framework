@@ -1,4 +1,5 @@
-﻿using Framework.Infrastructure.Repository;
+﻿using Framework.Infrastructure.Container;
+using Framework.Infrastructure.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,20 +13,20 @@ namespace Test.Infrastructure.Repository.EF
     {
         public static void Add(Person person)
         {
-            using (IRepositoryContext context = RepositoryContext.Create())
+            using (IRepositoryContext context = ContainerHelper.Resolve<IRepositoryContext>())
             {
-                var repository = context.GetRepository<Repository<Person>>();
+                var repository = new Repository<Person>(context);
                 repository.Add(person);
 
-                context.UnitOfWork.Commit();
+                repository.UnitOfWork.Commit();
             }
         }
 
         public static Person GetPerson(int id)
         {
-            using (IRepositoryContext context = RepositoryContext.Create())
+            using (IRepositoryContext context = ContainerHelper.Resolve<IRepositoryContext>())
             {
-                var repository = context.GetRepository<Repository<Person>>();
+                var repository = new Repository<Person>(context);
                 return repository.Get(id);
             }
         }

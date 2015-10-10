@@ -1,6 +1,5 @@
 ﻿namespace Framework.Infrastructure.Repository
 {
-    using Framework.Infrastructure.Container;
     using System;
     using System.Collections.Generic;
 
@@ -8,35 +7,14 @@
         : IRepositoryContext, IUnitOfWork
     {
         #region Fields
-        private readonly Guid _id = Guid.NewGuid();
+        private readonly Guid _uuid = Guid.NewGuid();
         #endregion
 
         #region IRepositoryContext Members
 
-        public Guid Id
+        public Guid UUID
         {
-            get { return _id; }
-        }
-
-        public IUnitOfWork UnitOfWork
-        {
-            get { return this; }
-        }
-
-        public TRepository GetRepository<TRepository>()
-        {
-            TRepository repository;
-            if (ContainerHelper.Instance.IsRegistered<TRepository>())
-            {
-                repository = ContainerHelper.Instance.Resolve<TRepository>(
-                    new ConstructorParameter { Name = "context", Value = this });
-            }
-            else
-            {
-                repository = (TRepository)Activator.CreateInstance(typeof(TRepository), this);
-            }
-
-            return repository;
+            get { return _uuid; }
         }
 
         #endregion
@@ -150,35 +128,20 @@
             }
         }
 
-        internal TEntity Get<TEntity>(string id)
+        internal TEntity Get<TEntity>(params object[] keyValues)
             where TEntity : class
         {
             ThrowIfDisposed();
 
-            if (string.IsNullOrWhiteSpace(id))
+            if (null == keyValues)
             {
-                var e = new ArgumentNullException("id");
+                var e = new ArgumentNullException("keyValues");
                 throw new RepositoryException(e.Message, e);
             }
 
             try
             {
-                return DoGet<TEntity>(id);
-            }
-            catch (Exception ex)
-            {
-                throw new RepositoryException(ex.Message, ex);
-            }
-        }
-
-        internal TEntity Get<TEntity>(int id)
-            where TEntity : class
-        {
-            ThrowIfDisposed();
-
-            try
-            {
-                return DoGet<TEntity>(id);
+                return DoGet<TEntity>(keyValues);
             }
             catch (Exception ex)
             {
@@ -245,21 +208,6 @@
 
         #endregion
 
-        #region Static Method
-
-        public static IRepositoryContext Create()
-        {
-            return ContainerHelper.Resolve<IRepositoryContext>();
-        }
-
-        public static T Create<T>()
-            where T : IRepositoryContext
-        {
-            return ContainerHelper.Resolve<T>();
-        }
-
-        #endregion
-
         #region Abstract Methods
 
         protected abstract void DoRegisterNew<TEntity>(TEntity item)
@@ -275,13 +223,12 @@
 
         protected abstract void DoRollback();
 
+
+
         protected abstract bool DoExists<TEntity>(ISpecification<TEntity> specification)
             where TEntity : class;
 
-        protected abstract TEntity DoGet<TEntity>(string id)
-            where TEntity : class;
-
-        protected abstract TEntity DoGet<TEntity>(int id)
+        protected abstract TEntity DoGet<TEntity>(params object[] keyValues)
             where TEntity : class;
 
         protected abstract TEntity DoSingle<TEntity>(ISpecification<TEntity> specification)

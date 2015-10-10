@@ -33,19 +33,24 @@
 
         #region IRepository Members
 
+        public IUnitOfWork UnitOfWork
+        {
+            get { return this._context; }
+        }
+
         public virtual void Add(TEntity entity)
         {
-            this._context.UnitOfWork.RegisterNew(entity);
+            (this._context as IUnitOfWork).RegisterNew(entity);
         }
 
         public virtual void Update(TEntity entity)
         {
-            this._context.UnitOfWork.RegisterModified(entity);
+            (this._context as IUnitOfWork).RegisterModified(entity);
         }
 
         public virtual void Delete(TEntity entity)
         {
-            this._context.UnitOfWork.RegisterDeleted(entity);
+            (this._context as IUnitOfWork).RegisterDeleted(entity);
         }
 
         public virtual bool Exists(ISpecification<TEntity> specification)
@@ -53,14 +58,9 @@
             return this._context.Exists(specification);
         }
 
-        public virtual TEntity Get(string id)
+        public virtual TEntity Get(params object[] keyValues)
         {
-            return this._context.Get<TEntity>(id);
-        }
-
-        public virtual TEntity Get(int id)
-        {
-            return this._context.Get<TEntity>(id);
+            return this._context.Get<TEntity>(keyValues);
         }
 
         public virtual TEntity Single(ISpecification<TEntity> specification)

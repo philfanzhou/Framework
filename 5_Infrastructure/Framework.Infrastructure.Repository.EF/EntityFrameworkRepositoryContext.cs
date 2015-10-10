@@ -58,15 +58,10 @@ namespace Framework.Infrastructure.Repository.EF
             var count = GetSet<TEntity>().Count(specification.GetExpression());
             return count != 0;
         }
-
-        protected override TEntity DoGet<TEntity>(string id)
+        
+        protected override TEntity DoGet<TEntity>(params object[] keyValues)
         {
-            return GetSet<TEntity>().Find(id);
-        }
-
-        protected override TEntity DoGet<TEntity>(int id)
-        {
-            return GetSet< TEntity > ().Find(id);
+            return GetSet<TEntity>().Find(keyValues);
         }
 
         protected override TEntity DoSingle<TEntity>(ISpecification<TEntity> specification)

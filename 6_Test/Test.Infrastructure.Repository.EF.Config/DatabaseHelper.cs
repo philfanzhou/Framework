@@ -9,7 +9,7 @@ namespace Test.Infrastructure.Repository.EF.Config
         public static void InitializeSqlServer(bool clearDatabase)
         {
             ContainerHelper.Instance
-                .RegisterType<IRepositoryContext,
+                .RegisterType<RepositoryContext,
                 EntityFrameworkRepositoryContext<TestSqlServerDbContext>>();
 
             if (clearDatabase)
@@ -23,14 +23,14 @@ namespace Test.Infrastructure.Repository.EF.Config
         public static void InitializeSqlite(bool clearDatabase)
         {
             ContainerHelper.Instance
-                .RegisterType<IRepositoryContext,
+                .RegisterType<RepositoryContext,
                 EntityFrameworkRepositoryContext<TestSqliteDbContext>>();
         }
 
         public static void InitializeMySql(bool clearDatabase)
         {
             ContainerHelper.Instance
-                .RegisterType<IRepositoryContext,
+                .RegisterType<RepositoryContext,
                 EntityFrameworkRepositoryContext<TestSqlServerDbContext>>();
 
             if (clearDatabase)

@@ -11,6 +11,8 @@ namespace Framework.Infrastructure.Repository
     public interface IRepository<TEntity>
         where TEntity : class
     {
+        IUnitOfWork UnitOfWork { get; }
+
         void Add(TEntity entity);
 
         void Update(TEntity entity);
@@ -19,7 +21,7 @@ namespace Framework.Infrastructure.Repository
 
         bool Exists(ISpecification<TEntity> specification);
 
-        TEntity Get(string id);
+        TEntity Get(params object[] keyValues);
 
         TEntity Single(ISpecification<TEntity> specification);
 

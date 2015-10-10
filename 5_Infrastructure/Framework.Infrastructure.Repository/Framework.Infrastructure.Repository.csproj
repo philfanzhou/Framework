@@ -61,12 +61,6 @@
     <Compile Include="Specifications\ParameterRebinder.cs" />
     <Compile Include="Specifications\Specification.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Framework.Infrastructure.Container\Framework.Infrastructure.Container.csproj">
-      <Project>{f3290e90-ff3b-41e3-9369-2dd497a6054b}</Project>
-      <Name>Framework.Infrastructure.Container</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

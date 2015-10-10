@@ -58,6 +58,10 @@
     <Compile Include="PersonDataService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Container\Framework.Infrastructure.Container.csproj">
+      <Project>{f3290e90-ff3b-41e3-9369-2dd497a6054b}</Project>
+      <Name>Framework.Infrastructure.Container</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository\Framework.Infrastructure.Repository.csproj">
       <Project>{ec6c563d-04ac-4eb0-b570-4c458746f230}</Project>
       <Name>Framework.Infrastructure.Repository</Name>
