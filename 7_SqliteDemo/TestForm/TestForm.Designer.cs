@@ -32,6 +32,7 @@
             this.button_AddRecord = new System.Windows.Forms.Button();
             this.button_delRecord = new System.Windows.Forms.Button();
             this.button_EditRecord = new System.Windows.Forms.Button();
+            this.button_testconnection = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button_GetAllRecords
@@ -74,11 +75,22 @@
             this.button_EditRecord.UseVisualStyleBackColor = true;
             this.button_EditRecord.Click += new System.EventHandler(this.button_EditRecord_Click);
             // 
+            // button_testconnection
+            // 
+            this.button_testconnection.Location = new System.Drawing.Point(12, 179);
+            this.button_testconnection.Name = "button_testconnection";
+            this.button_testconnection.Size = new System.Drawing.Size(123, 25);
+            this.button_testconnection.TabIndex = 4;
+            this.button_testconnection.Text = "测试连接";
+            this.button_testconnection.UseVisualStyleBackColor = true;
+            this.button_testconnection.Click += new System.EventHandler(this.button_testconnection_Click);
+            // 
             // TestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(146, 174);
+            this.ClientSize = new System.Drawing.Size(146, 243);
+            this.Controls.Add(this.button_testconnection);
             this.Controls.Add(this.button_EditRecord);
             this.Controls.Add(this.button_delRecord);
             this.Controls.Add(this.button_AddRecord);
@@ -97,6 +109,7 @@
         private System.Windows.Forms.Button button_AddRecord;
         private System.Windows.Forms.Button button_delRecord;
         private System.Windows.Forms.Button button_EditRecord;
+        private System.Windows.Forms.Button button_testconnection;
     }
 }
 

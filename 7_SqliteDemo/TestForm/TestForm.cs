@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Configuration;
 
 namespace Entity_Framework
 {
@@ -95,6 +96,15 @@ namespace Entity_Framework
             }
         }
 
+        private void button_testconnection_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(string.Format("修改前ConnectionStrings[{0}]", AppConfigManager.GetConnectionString()), "AppConfig中的连接字符串", MessageBoxButtons.OK);
 
+            AppConfigManager.UpdateConnectionString("test");
+
+            MessageBox.Show(string.Format("修改后ConnectionStrings[{0}]", AppConfigManager.GetConnectionString()), "AppConfig中的连接字符串", MessageBoxButtons.OK);
+
+            AppConfigManager.RestoreToDefaultConnectionString();
+        }
     }
 }

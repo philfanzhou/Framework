@@ -14,7 +14,7 @@ namespace Entity_Framework
         [STAThread]
         static void Main()
         {
-            Initializer.Initialize();
+            AppConfigManager.Initialize();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
