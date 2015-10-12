@@ -14,6 +14,8 @@ namespace Entity_Framework
         [STAThread]
         static void Main()
         {
+            Initializer.Initialize();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new TestForm());

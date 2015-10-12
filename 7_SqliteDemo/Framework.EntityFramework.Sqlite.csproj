@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="DataContext\PitmanContext.cs" />
     <Compile Include="DataManager\PitmanManager.cs" />
+    <Compile Include="Initializer.cs" />
     <Compile Include="Models\Announcement.cs" />
     <Compile Include="TestForm\TestForm.cs">
       <SubType>Form</SubType>
@@ -94,6 +95,7 @@
     <EmbeddedResource Include="TestForm\TestForm.resx">
       <DependentUpon>TestForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="App_Data\Pitman.db" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
