@@ -1,35 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Common;
+using System.Data.SQLite;
 using System.Data.SQLite.EF6;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Framework.Infrastructure.Repository.EF.SQLite
 {
-    [DbConfigurationType(typeof(SqliteDbConfiguration))]
-    public class SqliteDbContext : DbContext
+    [DbConfigurationType(typeof(SQLiteDbConfiguration))]
+    public class SQLiteDbContext : DbContext
     {
-        public SqliteDbContext(SqliteConnectionConfig dbConnection)
+        public SQLiteDbContext(SQLiteConnectionConfig dbConnection)
             : base(dbConnection.ToString())
         {
+            //数据库不存在时重新创建数据库
+            //Database.SetInitializer<SQLiteDbContext>(new CreateDatabaseIfNotExists<SQLiteDbContext>());
         }
     }
 
-    internal class SqliteDbConfiguration : DbConfiguration
+    internal class SQLiteDbConfiguration : DbConfiguration
     {
-        public SqliteDbConfiguration()
+        public SQLiteDbConfiguration()
         {
-            //SetProviderServices(System.Data.SQLite.EF6.SQLiteProviderFactorySQLiteProviderServices.ProviderInvariantName, SqlProviderServices.Instance);
-            SetProviderFactory("SQLite Data Provider", SQLiteProviderFactory.Instance);
+            //SetProviderFactory("System.Data.SQLite", SQLiteFactory.Instance);
+            SetProviderFactory("System.Data.SQLite.EF6", SQLiteProviderFactory.Instance);
 
-
-            //SetExecutionStrategy(SqlProviderServices.ProviderInvariantName, () => (IDbExecutionStrategy) new DefaultExecutionStrategy());
-
-            //SetDefaultConnectionFactory(
-            //    new SqlConnectionFactory(
-            //       @"Server=(localdb)\projects; Database=UserContextDb;Trusted_Connection=true"));
+            Type t = Type.GetType(
+                       "System.Data.SQLite.EF6.SQLiteProviderServices, System.Data.SQLite.EF6");
+            FieldInfo fi = t.GetField("Instance", BindingFlags.NonPublic | BindingFlags.Static);
+            SetProviderServices("System.Data.SQLite", (DbProviderServices)fi.GetValue(null));
         }
     }
 }

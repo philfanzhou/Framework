@@ -55,7 +55,7 @@
     <Compile Include="DbContext\TestSqlServerDbContext.cs" />
     <Compile Include="DbConfig\PersonConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DbContext\TestSqliteDbContext.cs" />
+    <Compile Include="DbContext\TestSQLiteDbContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -29,7 +29,7 @@ namespace Test.Infrastructure.Repository.EF
                 LastName = "Hello"
             };
 
-            PersonDataService.Add(expected);
+            //PersonDataService.Add(expected);
             var actual = PersonDataService.GetPerson(expected.Id);
 
             Assert.AreEqual(expected.Id, actual.Id);

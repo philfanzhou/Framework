@@ -1,24 +1,20 @@
 ﻿using Framework.Infrastructure.Repository.EF.SQLite;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Test.Infrastructure.Repository.EF.Config
 {
-    internal class TestSqliteDbContext : SqliteDbContext
+    internal class TestSQLiteDbContext : SQLiteDbContext
     {
-        private static readonly SqliteConnectionConfig connection = new SqliteConnectionConfig
+        private static readonly SQLiteConnectionConfig connection = new SQLiteConnectionConfig
         {
-            Database = "FrameworkTest.db",
+            //"data source = " + 
+            Database = System.Environment.CurrentDirectory + @"\FrameworkTest.db",
         };
 
-        public TestSqliteDbContext()
+        public TestSQLiteDbContext()
             : base(connection)
         {
-            Database.SetInitializer(new CreateDatabaseIfNotExists<TestSqliteDbContext>());
+            Database.SetInitializer(new CreateDatabaseIfNotExists<TestSQLiteDbContext>());
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

@@ -1,6 +1,6 @@
 ﻿namespace Framework.Infrastructure.Repository.EF.SQLite
 {
-    public class SqliteConnectionConfig
+    public class SQLiteConnectionConfig
     {
         public string Database { get; set; }
 
