@@ -11,6 +11,7 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
         {
             t.Value = value;
             Assert.AreEqual(value, t.Value);
+            Assert.AreEqual(value, t.ToString());
         }
 
         private static void TestNullandEmpty<T>(T t)

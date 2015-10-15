@@ -38,7 +38,10 @@ namespace Framework.Infrastructure.MemoryMappedFile
         /// <param name="path"></param>
         private MemoryMappedFileBase(string path) : base(path)
         {
-            ReadHeader();
+            using (var accessor = Mmf.CreateViewAccessor(0, this._headerSize))
+            {
+                accessor.Read(0, out _header);
+            }
         }
 
         /// <summary>
@@ -55,7 +58,11 @@ namespace Framework.Infrastructure.MemoryMappedFile
             // 创建文件之后要立即更新头，避免创建之后未加数据就关闭后，下次无法打开文件
             fileHeader.DataCount = 0;
             this._header = fileHeader;
-            WriteHeader();
+
+            using (var accessor = Mmf.CreateViewAccessor(0, this._headerSize))
+            {
+                accessor.Write(0, ref _header);
+            }
         }
 
         private static long CaculateCapacity(TDataHeader fileHeader)
@@ -198,8 +205,9 @@ namespace Framework.Infrastructure.MemoryMappedFile
                 position += this._headerSize;
                 position += this._dataItemSize * (index + count);
                 // 数据需要移动到的位置(左移)
-                long destination = position;
-                destination -= this._dataItemSize * count;
+                long destination = 0;
+                destination += this._headerSize;
+                destination += this._dataItemSize * index;
                 // 待向前移动byte长度
                 long length = (this._header.DataCount - (index + count)) * this._dataItemSize;
                 // 移动数据
@@ -269,28 +277,10 @@ namespace Framework.Infrastructure.MemoryMappedFile
 
         private void UpdateDataCount(int number)
         {
-            this._header.DataCount += number;
-            WriteHeader();
-        }
-
-        private void ReadHeader()
-        {
-            // 针对头文件进行特殊读写处理，因为可能在头文件中含有String等托管类型的数据
+            _header.DataCount += number;
             using (var accessor = Mmf.CreateViewAccessor(0, this._headerSize))
             {
-                byte[] array = new byte[this._headerSize];
-                accessor.ReadArray(0, array, 0, array.Length);
-                this._header = BytesToStruct<TDataHeader>(array);
-            }
-        }
-
-        private void WriteHeader()
-        {
-            // 针对头文件进行特殊读写处理，因为可能在头文件中含有String等托管类型的数据
-            using (var accessor = Mmf.CreateViewAccessor(0, this._headerSize))
-            {
-                byte[] array = StructToBytes(this._header);
-                accessor.WriteArray(0, array, 0, array.Length);
+                accessor.Write(0, ref _header);
             }
         }
 

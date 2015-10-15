@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace Framework.Infrastructure.MemoryMappedFile.Test
 {
@@ -14,13 +12,28 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
 
         public String128 StockName;
 
-        public String128 StockName1;
-        public byte byte1;
         public String256 StockComment;
+
+        public String256 Reserved1;
+
+        public String256 Reserved2;
+
+        public String256 Reserved3;
+
+        public String256 Reserved4;
+
+        public String256 Reserved5;
+
+        public String256 Reserved6;
     }
 
     public struct DataItem
     {
+        public String64 StockCode;
+
+        public String128 StockName;
+
+        public String256 StockComment;
 
         public int IntData { get; set; }
 
