@@ -15,8 +15,8 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
         public String128 StockName;
 
         public String128 StockName1;
-        //public byte byte1;
-        //public String256 StockComment;
+        public byte byte1;
+        public String256 StockComment;
     }
 
     public struct DataItem

@@ -540,6 +540,37 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
         }
 
         [TestMethod]
+        public void TestInsert1()
+        {
+            // Create file
+            string path = CreateFileAnyway("TestInsert.dat", 50);
+
+            int dataCount = 2;
+            var expectedList = AddDataToFile(dataCount, path);
+
+            var actualList = ReadAllDataFromFile(path);
+            CompareListItem(expectedList, actualList);
+
+
+
+            int dataIndex = 1;
+            var addDataItems = CreateRandomRealTimeItem(1, 5);
+            expectedList.InsertRange(dataIndex, addDataItems);
+
+            // Open and insert
+            using (var file = DataFile.Open(path))
+            {
+                foreach (var dataItem in addDataItems)
+                {
+                    file.Insert(dataItem, dataIndex++);
+                }
+            }
+
+            actualList = ReadAllDataFromFile(path);
+            CompareListItem(expectedList, actualList);
+        }
+
+        [TestMethod]
         public void TestInsertArray1()
         {
             string path = CreateFileAnyway("TestInsertArray1.dat", 20);

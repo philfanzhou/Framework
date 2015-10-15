@@ -203,7 +203,7 @@ namespace Framework.Infrastructure.MemoryMappedFile
                 // 待向前移动byte长度
                 long length = (this._header.DataCount - (index + count)) * this._dataItemSize;
                 // 移动数据
-                MoveDataPosition(ref destination, ref position, ref length, this._bufferSize);
+                MoveDataPosition(destination, position, length, this._bufferSize);
             }
 
             // 更新文件头
@@ -238,10 +238,10 @@ namespace Framework.Infrastructure.MemoryMappedFile
                 long destination = position;
                 destination += this._dataItemSize*array.Length;
                 // 需要移动的byte长度
-                long length = position;
-                length -= this._dataItemSize*index;
+                long length = this._dataItemSize * (this._header.DataCount - index);
+                //length -= this._dataItemSize*index;
                 // 移动数据
-                MoveDataPosition(ref destination, ref position, ref length, this._bufferSize);
+                MoveDataPosition(destination, position, length, this._bufferSize);
             }
 
             // 插入数据

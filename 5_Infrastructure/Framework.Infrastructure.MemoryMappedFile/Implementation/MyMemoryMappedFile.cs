@@ -109,7 +109,7 @@ namespace Framework.Infrastructure.MemoryMappedFile
         /// <param name="position">待移动数据所在位置</param>
         /// <param name="length">待移动数据的长度</param>
         /// <param name="bufferSize">移动数据过程中的Buffer长度</param>
-        protected void MoveDataPosition(ref long destination, ref long position, ref long length, int bufferSize)
+        protected void MoveDataPosition(long destination, long position, long length, int bufferSize)
         {
             // 判断移动方向
             bool leftMove = destination < position;
