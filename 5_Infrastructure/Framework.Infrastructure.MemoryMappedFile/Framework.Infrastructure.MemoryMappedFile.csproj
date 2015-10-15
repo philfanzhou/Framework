@@ -40,11 +40,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementation\ByteExt.cs" />
     <Compile Include="IMemoryMappedFile.cs" />
     <Compile Include="IMemoryMappedFileHeader.cs" />
     <Compile Include="Implementation\MemoryMappedFileBase.cs" />
     <Compile Include="Implementation\MyMemoryMappedFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="String128.cs" />
+    <Compile Include="String256.cs" />
+    <Compile Include="String64.cs" />
+    <Compile Include="Implementation\StringExt.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

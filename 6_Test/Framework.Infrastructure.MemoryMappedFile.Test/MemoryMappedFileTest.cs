@@ -20,7 +20,7 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
 
             FileHeader header = new FileHeader();
             header.MaxDataCount = maxDataCount;
-            header.Comment = "招商银行";
+            header.Code = "招商银行";
             using (DataFile.Create(path, header))
             { }
 
@@ -66,16 +66,22 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
             Assert.AreNotEqual(0, actualList.Count);
             Assert.AreEqual(expectedList.Count, actualList.Count);
 
-            Random random = new Random();
             for (int i = 0; i < expectedList.Count; i++)
             {
                 var expected = expectedList[i];
                 var actual = actualList[i];
+                
+                Assert.IsTrue(expected.Amount - actual.Amount < 0.00000000000000001);
+                Assert.IsTrue(expected.DecimalData - actual.DecimalData < 0.00000000000000001m);
+                Assert.IsTrue(expected.DoubleData - actual.DoubleData < 0.00000000000000001);
+                Assert.IsTrue(expected.FloatData - actual.FloatData < 0.00000000000000001);
+                Assert.IsTrue(expected.IntData - actual.IntData < 0.00000000000000001);
+                Assert.IsTrue(expected.LongData - actual.LongData < 0.00000000000000001);
+                Assert.AreEqual(expected.Time,  actual.Time);
 
-                Assert.AreEqual(expected, actual);
 
-                actual.DoubleData = random.NextDouble();
-                Assert.AreNotEqual(expected, actual);
+                Assert.IsTrue(expected.OtherStruct.DoubleData - actual.OtherStruct.DoubleData < 0.00000000000000001);
+                Assert.IsTrue(expected.OtherStruct.IntData - actual.OtherStruct.IntData < 0.00000000000000001);
             }
         }
 
@@ -138,10 +144,14 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
             }
 
             int maxDataCount = 10;
-            string comment = "招商银行";
+            string code = "600036";
+            string name = "招商银行";
+            string comment = "招商银行办公地址";
             FileHeader header = new FileHeader();
             header.MaxDataCount = maxDataCount;
-            header.Comment = comment;
+            header.Code = code;
+            header.StockName.Value = name;
+            header.StockComment.Value = comment;
             using (DataFile.Create(path, header))
             { }
 
@@ -153,7 +163,9 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
 
             //Assert.AreEqual(header, readedHeader);
             Assert.AreEqual(maxDataCount, readedHeader.MaxDataCount);
-            Assert.AreEqual(comment, readedHeader.Comment);
+            Assert.AreEqual(code, readedHeader.Code);
+            Assert.AreEqual(name, readedHeader.StockName.Value);
+            Assert.AreEqual(comment, readedHeader.StockComment.Value);
         }
 
         [TestMethod]
@@ -171,7 +183,7 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
             string comment = "招商银行";
             FileHeader header = new FileHeader();
             header.MaxDataCount = maxDataCount;
-            header.Comment = comment;
+            header.Code = comment;
             using (DataFile.Create(path, header))
             { }
         }

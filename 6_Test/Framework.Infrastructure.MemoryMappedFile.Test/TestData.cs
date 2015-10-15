@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Framework.Infrastructure.MemoryMappedFile.Test
@@ -8,31 +9,17 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
         public int DataCount { get; set; }
 
         public int MaxDataCount { get; set; }
+        
+        private String64 StockCode;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 20)]
-        private string comment;
+        public String128 StockName;
 
-        //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
-        //private byte[] comment;
+        public String256 StockComment;
 
-        public string Comment
+        public string Code
         {
-            //get
-            //{
-            //    return System.Text.Encoding.GetEncoding("GBK").GetString(comment);
-            //}
-            //set
-            //{
-            //    byte[] data = System.Text.Encoding.GetEncoding("GBK").GetBytes(value);
-            //    if (data.Length > 20)
-            //    {
-            //        throw new ArgumentOutOfRangeException();
-            //    }
-            //    this.comment = new byte[20];
-            //    data.CopyTo(comment, 0);
-            //}
-            get { return this.comment; }
-            set { this.comment = value; }
+            get { return this.StockCode.Value; }
+            set { this.StockCode.Value = value; }
         }
     }
 
@@ -56,7 +43,7 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
 
         public override string ToString()
         {
-            return this.DoubleData.ToString();
+            return this.DoubleData.ToString() + " " + Time.ToString("yyyy-MM-dd hh:mm:ss");
         }
     }
 
