@@ -9,22 +9,19 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
         public int DataCount { get; set; }
 
         public int MaxDataCount { get; set; }
-        
-        private String64 StockCode;
+
+        public String64 StockCode;
 
         public String128 StockName;
 
-        public String256 StockComment;
-
-        public string Code
-        {
-            get { return this.StockCode.Value; }
-            set { this.StockCode.Value = value; }
-        }
+        public String128 StockName1;
+        //public byte byte1;
+        //public String256 StockComment;
     }
 
     public struct DataItem
     {
+
         public int IntData { get; set; }
 
         public float FloatData { get; set; }
