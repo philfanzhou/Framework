@@ -8,10 +8,13 @@
 
         public override void Move(System.IO.MemoryMappedFiles.MemoryMappedFile mmf)
         {
-            using (var stream = mmf.CreateViewStream())
+            long offset = base.AbsoluteDestination;
+            long viewLength = base.AbsolutePosition - base.AbsoluteDestination + base.DataLength;
+
+            using (var stream = mmf.CreateViewStream(offset, viewLength))
             {
-                long relativePosition = base.AbsolutePosition;
-                long relativeDestination = base.AbsoluteDestination;
+                long relativePosition = base.AbsolutePosition - base.AbsoluteDestination;
+                long relativeDestination = 0;
                 long dataLength = base.DataLength;
 
                 while (dataLength > 0)

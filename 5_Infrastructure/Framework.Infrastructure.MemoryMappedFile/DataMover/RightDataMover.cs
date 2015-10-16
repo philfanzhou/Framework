@@ -10,6 +10,7 @@
         {
             long offset = base.AbsolutePosition - base.DataLength;
             long viewLength = base.AbsoluteDestination - base.AbsolutePosition + base.DataLength;
+
             using (var stream = mmf.CreateViewStream(offset, viewLength))
             {
                 long relativePosition = base.DataLength;
