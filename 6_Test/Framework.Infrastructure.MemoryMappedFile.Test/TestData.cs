@@ -67,6 +67,18 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
     public class DataFile
         : MemoryMappedFileBase<FileHeader, DataItem>
     {
-        private DataFile() { }
+        public DataFile(string path) : base(path) { }
+
+        public DataFile(string path, FileHeader header) : base(path, header) { }
+
+        public static DataFile Open(string path)
+        {
+            return new DataFile(path);
+        }
+
+        public static DataFile Create(string path, FileHeader fileHeader)
+        {
+            return new DataFile(path, fileHeader);
+        }
     }
 }
