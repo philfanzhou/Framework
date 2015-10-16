@@ -20,7 +20,7 @@ namespace Test.Infrastructure.Repository.EF
         }
 
         [TestMethod]
-        public void TestReadAndWrite()
+        public void TestSqliteReadAndWrite()
         {
             Person expected = new Person
             {

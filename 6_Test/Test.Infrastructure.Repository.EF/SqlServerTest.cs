@@ -59,7 +59,7 @@ namespace Test.Infrastructure.Repository.EF
         #endregion
 
         [TestMethod]
-        public void TestReadAndWrite()
+        public void TestSqlServerReadAndWrite()
         {
             Person expected = new Person
             {
