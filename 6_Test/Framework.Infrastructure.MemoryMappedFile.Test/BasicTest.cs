@@ -81,7 +81,7 @@ namespace Framework.Infrastructure.MemoryMappedFile.Test
             FileHeader readedHeader;
             using (var file = DataFile.Open(path))
             {
-                readedHeader = (FileHeader)file.Header;
+                readedHeader = file.Header;
             }
 
             Assert.AreEqual(header, readedHeader);

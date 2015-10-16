@@ -42,6 +42,58 @@ namespace Framework.Infrastructure.MemoryMappedFile
 
         #endregion
 
+        /// <summary>
+        /// 在内存映射文件中整体移动一定长度的byte
+        /// </summary>
+        /// <param name="destination">数据需要移动到的位置</param>
+        /// <param name="position">待移动数据所在位置</param>
+        /// <param name="length">待移动数据的长度</param>
+        /// <param name="bufferSize">移动数据过程中的Buffer长度</param>
+        protected void MoveDataPosition(long destination, long position, long length, int bufferSize)
+        {
+            // 判断移动方向
+            bool leftMove = destination < position;
+
+            byte[] buffer = new byte[bufferSize];
+            using (var stream = Mmf.CreateViewStream())
+            {
+                while (length > 0)
+                {
+                    if (length < bufferSize)
+                    {
+                        buffer = new byte[length];
+                    }
+
+                    if (!leftMove)
+                    {
+                        destination -= buffer.Length;
+                        position -= buffer.Length;
+                    }
+
+                    stream.Seek(position, SeekOrigin.Begin);
+                    stream.Read(buffer, 0, buffer.Length);
+                    stream.Seek(destination, SeekOrigin.Begin);
+                    stream.Write(buffer, 0, buffer.Length);
+
+                    if (leftMove)
+                    {
+                        destination += buffer.Length;
+                        position += buffer.Length;
+                    }
+
+                    length -= buffer.Length;
+                }
+
+                //if (leftMove) //为了性能考虑，暂时不抹除左移后，原位置右边剩余的废弃数据
+                //{
+                //    // 如果是左移数据，需要抹除最后面的一段位置的废弃数据
+                //    buffer = new byte[position - destination];
+                //    stream.Seek(destination, SeekOrigin.Begin);
+                //    stream.Write(buffer, 0, buffer.Length);
+                //}
+            }
+        }
+
         #region IDisposable Member
 
         protected bool Disposed;
@@ -101,58 +153,6 @@ namespace Framework.Infrastructure.MemoryMappedFile
         }
 
         #endregion
-
-        /// <summary>
-        /// 在内存映射文件中整体移动一定长度的byte
-        /// </summary>
-        /// <param name="destination">数据需要移动到的位置</param>
-        /// <param name="position">待移动数据所在位置</param>
-        /// <param name="length">待移动数据的长度</param>
-        /// <param name="bufferSize">移动数据过程中的Buffer长度</param>
-        protected void MoveDataPosition(long destination, long position, long length, int bufferSize)
-        {
-            // 判断移动方向
-            bool leftMove = destination < position;
-
-            byte[] buffer = new byte[bufferSize];
-            using (var stream = Mmf.CreateViewStream())
-            {
-                while (length > 0)
-                {
-                    if (length < bufferSize)
-                    {
-                        buffer = new byte[length];
-                    }
-
-                    if (!leftMove)
-                    {
-                        destination -= buffer.Length;
-                        position -= buffer.Length;
-                    }
-
-                    stream.Seek(position, SeekOrigin.Begin);
-                    stream.Read(buffer, 0, buffer.Length);
-                    stream.Seek(destination, SeekOrigin.Begin);
-                    stream.Write(buffer, 0, buffer.Length);
-
-                    if (leftMove)
-                    {
-                        destination += buffer.Length;
-                        position += buffer.Length;
-                    }
-
-                    length -= buffer.Length;
-                }
-
-                //if (leftMove) //为了性能考虑，暂时不抹除左移后，原位置右边剩余的废弃数据
-                //{
-                //    // 如果是左移数据，需要抹除最后面的一段位置的废弃数据
-                //    buffer = new byte[position - destination];
-                //    stream.Seek(destination, SeekOrigin.Begin);
-                //    stream.Write(buffer, 0, buffer.Length);
-                //}
-            }
-        }
 
         //protected static byte[] StructToBytes<T>(T structObj)
         //    where T : struct

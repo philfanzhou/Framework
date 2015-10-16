@@ -64,12 +64,9 @@ namespace Framework.Infrastructure.MemoryMappedFile
                 accessor.Write(0, ref _header);
             }
         }
+        #endregion
 
-        private static long CaculateCapacity(TDataHeader fileHeader)
-        {
-            return fileHeader.MaxDataCount * Marshal.SizeOf(typeof(TDataItem)) + Marshal.SizeOf(typeof(TDataHeader));
-        }
-
+        #region OpenAndCreate
         public static IMemoryMappedFile<TDataHeader, TDataItem> Open(string path)
         {
             return new MemoryMappedFileBase<TDataHeader, TDataItem>(path);
@@ -79,17 +76,16 @@ namespace Framework.Infrastructure.MemoryMappedFile
         {
             return new MemoryMappedFileBase<TDataHeader, TDataItem>(path, fileHeader);
         }
-
         #endregion
 
         #region Property
 
-        public IMemoryMappedFileHeader Header
+        public TDataHeader Header
         {
             get 
             {
                 ThrowIfDisposed();
-                return this._header;
+                return _header;
             }
         }
 
@@ -160,6 +156,11 @@ namespace Framework.Infrastructure.MemoryMappedFile
         #endregion
 
         #region Private Method
+
+        private static long CaculateCapacity(TDataHeader fileHeader)
+        {
+            return fileHeader.MaxDataCount * Marshal.SizeOf(typeof(TDataItem)) + Marshal.SizeOf(typeof(TDataHeader));
+        }
 
         private IEnumerable<TDataItem> DoRead(int index, int count)
         {

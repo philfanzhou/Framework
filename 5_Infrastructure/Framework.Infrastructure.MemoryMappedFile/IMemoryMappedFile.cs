@@ -7,7 +7,7 @@ namespace Framework.Infrastructure.MemoryMappedFile
         where TDataHeader : struct, IMemoryMappedFileHeader
         where TDataItem : struct
     {
-        IMemoryMappedFileHeader Header { get; }
+        TDataHeader Header { get; }
 
         void Add(TDataItem item);
 
