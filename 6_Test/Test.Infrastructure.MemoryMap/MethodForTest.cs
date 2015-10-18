@@ -16,8 +16,8 @@ namespace Test.Infrastructure.MemoryMap
             header.DataCount = 0;
             header.MaxDataCount = maxDataCount;
 
-            header.StockCode.Value = "600036";
-            header.StockName.Value = GetRandomChinese(8);
+            header.StockCode = "600036";
+            header.StockName = GetRandomChinese(8);
             header.StockComment.Value = GetRandomChinese(16);
             header.Reserved1.Value = GetRandomChinese(16);
             header.Reserved2.Value = GetRandomChinese(16);

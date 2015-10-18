@@ -41,13 +41,8 @@ namespace Test.Infrastructure.MemoryMap
             {
                 File.Delete(path);
             }
-
-            int maxDataCount = 0;
-            string comment = "招商银行";
-            FileHeader header = new FileHeader();
-            header.MaxDataCount = maxDataCount;
-            header.StockCode.Value = comment;
-            using (DataFile.Create(path, header))
+            
+            using (DataFile.Create(path, CreateHeader(0)))
             { }
         }
 
@@ -63,9 +58,30 @@ namespace Test.Infrastructure.MemoryMap
             }
         }
 
+        [TestMethod]
+        public void TestCanCreateFolderAutomatic()
+        {
+            string path = Environment.CurrentDirectory + @"\TestFolder\" + "TestFileHeader1.dat";
+            string directory = Path.GetDirectoryName(path);
+            if(File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            if(Directory.Exists(directory))
+            {
+                Directory.Delete(directory);
+            }
+
+            FileHeader expected = CreateHeader(10);
+            using (var file = DataFile.Create(path, expected))
+            {
+                Assert.IsNotNull(file);
+            }
+        }
+
         #region Header
         [TestMethod]
-        public void TestFileHeader1()
+        public void TestReadHeader()
         {
             string path = Environment.CurrentDirectory + @"\" + "TestFileHeader1.dat";
 
@@ -74,17 +90,40 @@ namespace Test.Infrastructure.MemoryMap
                 File.Delete(path);
             }
 
-            FileHeader header = CreateHeader(10);
-            using (DataFile.Create(path, header))
+            FileHeader expected = CreateHeader(10);
+            using (DataFile.Create(path, expected))
             { }
 
-            FileHeader readedHeader;
+            FileHeader actual;
             using (var file = DataFile.Open(path))
             {
-                readedHeader = file.Header;
+                actual = file.Header;
             }
 
-            Assert.AreEqual(header, readedHeader);
+            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected.StockCode, actual.StockCode);
+            Assert.AreEqual(expected.StockName, actual.StockName);
+        }
+
+        [TestMethod]
+        public void TestCannotModifyHeader()
+        {
+            string path = CreateFileAnyway("TestModifyHeader.dat", 10);
+
+            FileHeader expected;
+            using (var file = DataFile.Open(path))
+            {
+                expected = ((FileHeader)file.Header);
+                expected.MaxDataCount = 12;
+            }
+
+            FileHeader actual;
+            using (var file = DataFile.Open(path))
+            {
+                actual = file.Header;
+            }
+
+            Assert.AreNotEqual(expected, actual);
         }
         #endregion
     }

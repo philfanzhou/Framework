@@ -9,9 +9,19 @@ namespace Test.Infrastructure.MemoryMap
 
         public int MaxDataCount { get; set; }
 
-        public String64 StockCode;
+        private String64 stockCode;
+        public string StockCode
+        {
+            get { return stockCode.Value; }
+            set { stockCode.Value = value; }
+        }
 
-        public String128 StockName;
+        private String128 stockName;
+        public string StockName
+        {
+            get { return stockName.Value; }
+            set { stockName.Value = value; }
+        }
 
         public String256 StockComment;
 
