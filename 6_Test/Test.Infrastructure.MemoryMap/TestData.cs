@@ -66,7 +66,7 @@ namespace Test.Infrastructure.MemoryMap
     }
 
     public class DataFile
-        : MemoryMappedFileBase<FileHeader, DataItem>
+        : NonConcurrentMemoryMappedFile<FileHeader, DataItem>
     {
         public DataFile(string path) : base(path) { }
 

@@ -40,13 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConcurrentMemoryMappedFile.cs" />
     <Compile Include="DataMover\DataMover.cs" />
     <Compile Include="DataMover\LeftDataMover.cs" />
     <Compile Include="DataMover\RightDataMover.cs" />
     <Compile Include="IMemoryMappedFile.cs" />
     <Compile Include="IMemoryMappedFileHeader.cs" />
+    <Compile Include="NonConcurrentMemoryMappedFile.cs" />
     <Compile Include="MemoryMappedFileBase.cs" />
-    <Compile Include="MyMemoryMappedFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="String128.cs" />
     <Compile Include="String256.cs" />
