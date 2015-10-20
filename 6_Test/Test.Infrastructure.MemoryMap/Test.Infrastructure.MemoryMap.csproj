@@ -62,7 +62,6 @@
     <Compile Include="StringStructTest.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="ConcurrentTest.cs" />
-    <Compile Include="UnitTest1.cs" />
     <Compile Include="UpdateTest.cs" />
   </ItemGroup>
   <ItemGroup>
