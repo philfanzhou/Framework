@@ -53,7 +53,6 @@ namespace Test.Infrastructure.MemoryMap
         public double DoubleData { get; set; }
 
         public decimal DecimalData { get; set; }
-        //private int int333;
 
         public long LongData { get; set; }
 
@@ -63,10 +62,10 @@ namespace Test.Infrastructure.MemoryMap
 
         public DateTime Time { get; set; }
 
-        //public TestEnum Enum
-        //{
-        //    get; set;
-        //}
+        public TestEnum Enum
+        {
+            get; set;
+        }
 
         public override string ToString()
         {

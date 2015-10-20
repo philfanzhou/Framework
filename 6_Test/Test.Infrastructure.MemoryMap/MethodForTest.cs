@@ -51,6 +51,10 @@ namespace Test.Infrastructure.MemoryMap
                 tempItem.StockName.Value = GetRandomChinese(8);
                 tempItem.StockComment.Value = GetRandomChinese(16);
 
+                TestEnum enumValue;
+                Enum.TryParse(random.Next(0, 5).ToString(), out enumValue);
+                tempItem.Enum = enumValue;
+
                 result.Add(tempItem);
             }
 
@@ -69,19 +73,28 @@ namespace Test.Infrastructure.MemoryMap
                 var expected = expectedList[i];
                 var actual = actualList[i];
 
-                Assert.AreEqual(expected, actual);
+                //Assert.AreEqual(expected, actual);
 
-                //Assert.IsTrue(expected.Amount - actual.Amount < 0.00000000000000001);
-                //Assert.IsTrue(expected.DecimalData - actual.DecimalData < 0.00000000000000001m);
-                //Assert.IsTrue(expected.DoubleData - actual.DoubleData < 0.00000000000000001);
-                //Assert.IsTrue(expected.FloatData - actual.FloatData < 0.00000000000000001);
-                //Assert.IsTrue(expected.IntData - actual.IntData < 0.00000000000000001);
-                //Assert.IsTrue(expected.LongData - actual.LongData < 0.00000000000000001);
-                //Assert.AreEqual(expected.Time, actual.Time);
+                Assert.AreEqual(expected.StockCode.Value,
+                    actual.StockCode.Value);
+                Assert.AreEqual(expected.StockName.Value,
+                    actual.StockName.Value);
+                Assert.AreEqual(expected.StockComment.Value,
+                    actual.StockComment.Value);
 
+                Assert.IsTrue(expected.IntData - actual.IntData < 0.00000000000000001);
+                Assert.IsTrue(expected.FloatData - actual.FloatData < 0.00000000000000001);
+                Assert.IsTrue(expected.DoubleData - actual.DoubleData < 0.00000000000000001);
+                Assert.IsTrue(expected.DecimalData - actual.DecimalData < 0.00000000000000001m);
+                Assert.IsTrue(expected.LongData - actual.LongData < 0.00000000000000001);
 
-                //Assert.IsTrue(expected.OtherStruct.DoubleData - actual.OtherStruct.DoubleData < 0.00000000000000001);
-                //Assert.IsTrue(expected.OtherStruct.IntData - actual.OtherStruct.IntData < 0.00000000000000001);
+                Assert.IsTrue(expected.OtherStruct.IntData - actual.OtherStruct.IntData < 0.00000000000000001);
+                Assert.IsTrue(expected.OtherStruct.DoubleData - actual.OtherStruct.DoubleData < 0.00000000000000001);
+
+                Assert.IsTrue(expected.Amount - actual.Amount < 0.00000000000000001);
+                Assert.IsTrue(expected.Time - actual.Time < new TimeSpan(0, 0, 1));
+
+                Assert.AreEqual(expected.Enum, actual.Enum);
             }
         }
 

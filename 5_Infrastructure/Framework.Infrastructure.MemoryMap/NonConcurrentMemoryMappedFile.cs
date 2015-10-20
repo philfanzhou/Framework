@@ -34,10 +34,7 @@ namespace Framework.Infrastructure.MemoryMap
         /// <param name="path"></param>
         public NonConcurrentMemoryMappedFile(string path) : base(path)
         {
-            using (var accessor = Mmf.CreateViewAccessor(0, this._headerSize))
-            {
-                accessor.Read(0, out _header);
-            }
+            ReaderHeader();
         }
 
         /// <summary>
@@ -54,11 +51,7 @@ namespace Framework.Infrastructure.MemoryMap
             // 创建文件之后要立即更新头，避免创建之后未加数据就关闭后，下次无法打开文件
             fileHeader.DataCount = 0;
             this._header = fileHeader;
-
-            using (var accessor = Mmf.CreateViewAccessor(0, this._headerSize))
-            {
-                accessor.Write(0, ref _header);
-            }
+            WriteHeader();
         }
         #endregion
 
@@ -140,6 +133,7 @@ namespace Framework.Infrastructure.MemoryMap
         #endregion
 
         #region Protected Method
+
         protected virtual IEnumerable<TDataItem> DoRead(int index, int count)
         {
             ThrowIfDisposed();
@@ -160,49 +154,18 @@ namespace Framework.Infrastructure.MemoryMap
 
             using (var accessor = Mmf.CreateViewAccessor(offset, _dataItemSize * count))
             {
-                accessor.ReadArray(0, result, 0, result.Length);
+                //accessor.ReadArray(0, result, 0, result.Length);
+
+
+                for (int i = 0; i < result.Length; i++)
+                {
+                    byte[] array = new byte[_dataItemSize];
+                    accessor.ReadArray<byte>(_dataItemSize * i, array, 0, array.Length);
+                    result[i] = BytesToStruct<TDataItem>(array);
+                }
             }
 
             return result;
-        }
-
-        protected virtual void DoDelete(int index, int count)
-        {
-            ThrowIfDisposed();
-
-            if (index >= _header.MaxDataCount || index < 0)
-                throw new ArgumentOutOfRangeException("index");
-
-            if (count > _header.MaxDataCount || count < 1)
-                throw new ArgumentOutOfRangeException("count");
-            if (index + count > _header.MaxDataCount)
-                throw new ArgumentOutOfRangeException("count");
-
-            if (index >= _header.DataCount)
-            {
-                return;
-            }
-
-            if (index + count < _header.DataCount)
-            {
-                // 待移动数据所在位置(左移)
-                long position = 0;
-                position += _headerSize;
-                position += _dataItemSize * (index + count);
-                // 数据需要移动到的位置(左移)
-                long destination = 0;
-                destination += _headerSize;
-                destination += _dataItemSize * index;
-                // 待向前移动byte长度
-                long length = (_header.DataCount - (index + count)) * _dataItemSize;
-
-                // 移动数据
-                var mover = DataMover.Create(position, destination, length);
-                mover.Move(Mmf);
-            }
-
-            // 更新文件头
-            UpdateDataCount(-count);
         }
 
         protected virtual void DoInsert(IEnumerable<TDataItem> items, int index, bool ChangeDataCount)
@@ -246,7 +209,14 @@ namespace Framework.Infrastructure.MemoryMap
             long offset = _headerSize + _dataItemSize * index;
             using (var accessor = Mmf.CreateViewAccessor(offset, _dataItemSize * array.Length))
             {
-                accessor.WriteArray(0, array, 0, array.Length);
+                //accessor.WriteArray(0, array, 0, array.Length);
+
+
+                for (int i = 0; i < array.Length; i++)
+                {
+                    byte[] buffer = StructToBytes(array[i]);
+                    accessor.WriteArray<byte>(_dataItemSize * i, buffer, 0, buffer.Length);
+                }
             }
 
             // 更新文件头
@@ -265,13 +235,73 @@ namespace Framework.Infrastructure.MemoryMap
             }
         }
 
+        private void ReaderHeader()
+        {
+            using (var accessor = Mmf.CreateViewAccessor(0, this._headerSize))
+            {
+                //accessor.Read(0, out _header);
+
+                byte[] array = new byte[_headerSize];
+                accessor.ReadArray<byte>(0, array, 0, array.Length);
+                this._header = BytesToStruct<TDataHeader>(array);
+            }
+        }
+
+        private void WriteHeader()
+        {
+            using (var accessor = Mmf.CreateViewAccessor(0, this._headerSize))
+            {
+                //accessor.Write(0, ref _header);
+
+                byte[] array = StructToBytes(this._header);
+                accessor.WriteArray<byte>(0, array, 0, array.Length);
+            }
+        }
+
+
+        protected virtual void DoDelete(int index, int count)
+        {
+            ThrowIfDisposed();
+
+            if (index >= _header.MaxDataCount || index < 0)
+                throw new ArgumentOutOfRangeException("index");
+
+            if (count > _header.MaxDataCount || count < 1)
+                throw new ArgumentOutOfRangeException("count");
+            if (index + count > _header.MaxDataCount)
+                throw new ArgumentOutOfRangeException("count");
+
+            if (index >= _header.DataCount)
+            {
+                return;
+            }
+
+            if (index + count < _header.DataCount)
+            {
+                // 待移动数据所在位置(左移)
+                long position = 0;
+                position += _headerSize;
+                position += _dataItemSize * (index + count);
+                // 数据需要移动到的位置(左移)
+                long destination = 0;
+                destination += _headerSize;
+                destination += _dataItemSize * index;
+                // 待向前移动byte长度
+                long length = (_header.DataCount - (index + count)) * _dataItemSize;
+
+                // 移动数据
+                var mover = DataMover.Create(position, destination, length);
+                mover.Move(Mmf);
+            }
+
+            // 更新文件头
+            UpdateDataCount(-count);
+        }
+
         protected virtual void UpdateDataCount(int number)
         {
             _header.DataCount += number;
-            using (var accessor = Mmf.CreateViewAccessor(0, _headerSize))
-            {
-                accessor.Write(0, ref _header);
-            }
+            WriteHeader();
         }
         #endregion
 
