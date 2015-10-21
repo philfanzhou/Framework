@@ -25,7 +25,7 @@ namespace Test.Infrastructure.MemoryMap
             return header;
         }
 
-        private List<DataItem> CreateDataItem(int count)
+        private static List<DataItem> CreateDataItem(int count)
         {
             List<DataItem> result = new List<DataItem>();
             Random random = new Random();
@@ -139,12 +139,12 @@ namespace Test.Infrastructure.MemoryMap
             return expectedList;
         }
 
-        private string GetRandomChinese(int strlength)
+        private static string GetRandomChinese(int strlength)
         {
             // 获取GB2312编码页（表） 
             Encoding gb = Encoding.GetEncoding("gb2312");
 
-            object[] bytes = this.CreateRegionCode(strlength);
+            object[] bytes = CreateRegionCode(strlength);
 
             StringBuilder sb = new StringBuilder();
 
@@ -162,7 +162,7 @@ namespace Test.Infrastructure.MemoryMap
     四个字节数组存储在object数组中。 
     参数：strlength，代表需要产生的汉字个数 
     **/
-        private object[] CreateRegionCode(int strlength)
+        private static object[] CreateRegionCode(int strlength)
         {
             //定义一个字符串数组储存汉字编码的组成元素 
             string[] rBase = new String[16] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
