@@ -1,5 +1,6 @@
 ﻿using Framework.Infrastructure.MemoryMap;
 using System;
+using System.Runtime.InteropServices;
 
 namespace Test.Infrastructure.MemoryMap
 {
@@ -45,6 +46,15 @@ namespace Test.Infrastructure.MemoryMap
         public String128 StockName;
 
         public String256 StockComment;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 11)]
+        private string testString;
+
+        public string TestString
+        {
+            get { return testString; }
+            set { testString = value; }
+        }
 
         public int IntData { get; set; }
 

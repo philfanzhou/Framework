@@ -34,7 +34,7 @@ namespace Framework.Infrastructure.MemoryMap
         /// <param name="path"></param>
         public NonConcurrentMemoryMappedFile(string path) : base(path)
         {
-            ReaderHeader();
+            this._header = ReadData<TDataHeader>(0, 1).FirstOrDefault();
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Framework.Infrastructure.MemoryMap
             // 创建文件之后要立即更新头，避免创建之后未加数据就关闭后，下次无法打开文件
             fileHeader.DataCount = 0;
             this._header = fileHeader;
-            WriteHeader();
+            WriteData(0, new TDataHeader[] { _header });
         }
         #endregion
 
@@ -150,22 +150,7 @@ namespace Framework.Infrastructure.MemoryMap
             }
 
             long offset = _headerSize + _dataItemSize * index;
-            TDataItem[] result = new TDataItem[count];
-
-            using (var accessor = Mmf.CreateViewAccessor(offset, _dataItemSize * count))
-            {
-                //accessor.ReadArray(0, result, 0, result.Length);
-
-
-                for (int i = 0; i < result.Length; i++)
-                {
-                    byte[] array = new byte[_dataItemSize];
-                    accessor.ReadArray<byte>(_dataItemSize * i, array, 0, array.Length);
-                    result[i] = BytesToStruct<TDataItem>(array);
-                }
-            }
-
-            return result;
+            return ReadData<TDataItem>(offset, count);
         }
 
         protected virtual void DoInsert(IEnumerable<TDataItem> items, int index, bool ChangeDataCount)
@@ -201,23 +186,12 @@ namespace Framework.Infrastructure.MemoryMap
                 long length = _dataItemSize * (_header.DataCount - index);
 
                 // 移动数据
-                var mover = DataMover.Create(position, destination, length);
-                mover.Move(Mmf);
+                MoveData(position, destination, length);
             }
 
             // 插入数据
             long offset = _headerSize + _dataItemSize * index;
-            using (var accessor = Mmf.CreateViewAccessor(offset, _dataItemSize * array.Length))
-            {
-                //accessor.WriteArray(0, array, 0, array.Length);
-
-
-                for (int i = 0; i < array.Length; i++)
-                {
-                    byte[] buffer = StructToBytes(array[i]);
-                    accessor.WriteArray<byte>(_dataItemSize * i, buffer, 0, buffer.Length);
-                }
-            }
+            WriteData(offset, array);
 
             // 更新文件头
             if (ChangeDataCount)
@@ -234,30 +208,6 @@ namespace Framework.Infrastructure.MemoryMap
                 }
             }
         }
-
-        private void ReaderHeader()
-        {
-            using (var accessor = Mmf.CreateViewAccessor(0, this._headerSize))
-            {
-                //accessor.Read(0, out _header);
-
-                byte[] array = new byte[_headerSize];
-                accessor.ReadArray<byte>(0, array, 0, array.Length);
-                this._header = BytesToStruct<TDataHeader>(array);
-            }
-        }
-
-        private void WriteHeader()
-        {
-            using (var accessor = Mmf.CreateViewAccessor(0, this._headerSize))
-            {
-                //accessor.Write(0, ref _header);
-
-                byte[] array = StructToBytes(this._header);
-                accessor.WriteArray<byte>(0, array, 0, array.Length);
-            }
-        }
-
 
         protected virtual void DoDelete(int index, int count)
         {
@@ -290,8 +240,7 @@ namespace Framework.Infrastructure.MemoryMap
                 long length = (_header.DataCount - (index + count)) * _dataItemSize;
 
                 // 移动数据
-                var mover = DataMover.Create(position, destination, length);
-                mover.Move(Mmf);
+                MoveData(position, destination, length);
             }
 
             // 更新文件头
@@ -301,7 +250,7 @@ namespace Framework.Infrastructure.MemoryMap
         protected virtual void UpdateDataCount(int number)
         {
             _header.DataCount += number;
-            WriteHeader();
+            WriteData(0, new TDataHeader[] { _header });
         }
         #endregion
 

@@ -51,6 +51,8 @@ namespace Test.Infrastructure.MemoryMap
                 tempItem.StockName.Value = GetRandomChinese(8);
                 tempItem.StockComment.Value = GetRandomChinese(16);
 
+                tempItem.TestString = GetRandomChinese(5);
+
                 TestEnum enumValue;
                 Enum.TryParse(random.Next(0, 5).ToString(), out enumValue);
                 tempItem.Enum = enumValue;
@@ -81,6 +83,8 @@ namespace Test.Infrastructure.MemoryMap
                     actual.StockName.Value);
                 Assert.AreEqual(expected.StockComment.Value,
                     actual.StockComment.Value);
+                Assert.AreEqual(expected.TestString,
+                    actual.TestString);
 
                 Assert.IsTrue(expected.IntData - actual.IntData < 0.00000000000000001);
                 Assert.IsTrue(expected.FloatData - actual.FloatData < 0.00000000000000001);
