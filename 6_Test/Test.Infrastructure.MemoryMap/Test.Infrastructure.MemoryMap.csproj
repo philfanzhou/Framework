@@ -52,17 +52,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AddTest.cs" />
-    <Compile Include="BasicTest.cs" />
-    <Compile Include="DeleteTest.cs" />
-    <Compile Include="InsertTest.cs" />
+    <Compile Include="BaiscTest\AddTest.cs" />
+    <Compile Include="BaiscTest\BasicTest.cs" />
+    <Compile Include="BaiscTest\DeleteTest.cs" />
+    <Compile Include="BaiscTest\InsertTest.cs" />
     <Compile Include="MethodForTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReadTest.cs" />
+    <Compile Include="BaiscTest\ReadTest.cs" />
     <Compile Include="StringStructTest.cs" />
-    <Compile Include="TestData.cs" />
+    <Compile Include="DataDefineForTest.cs" />
     <Compile Include="ConcurrentTest.cs" />
-    <Compile Include="UpdateTest.cs" />
+    <Compile Include="Performance.cs" />
+    <Compile Include="BaiscTest\UpdateTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.MemoryMap\Framework.Infrastructure.MemoryMap.csproj">
