@@ -40,7 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConcurrentMemoryMappedFile.cs" />
+    <Compile Include="ConcurrentFile.cs" />
+    <Compile Include="ConcurrentFileFactory.cs" />
     <Compile Include="DataMover\DataMover.cs" />
     <Compile Include="DataMover\LeftDataMover.cs" />
     <Compile Include="DataMover\RightDataMover.cs" />
