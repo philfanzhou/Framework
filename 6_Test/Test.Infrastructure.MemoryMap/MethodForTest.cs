@@ -75,31 +75,36 @@ namespace Test.Infrastructure.MemoryMap
                 var expected = expectedList[i];
                 var actual = actualList[i];
 
-                //Assert.AreEqual(expected, actual);
-
-                Assert.AreEqual(expected.StockCode.Value,
-                    actual.StockCode.Value);
-                Assert.AreEqual(expected.StockName.Value,
-                    actual.StockName.Value);
-                Assert.AreEqual(expected.StockComment.Value,
-                    actual.StockComment.Value);
-                Assert.AreEqual(expected.TestString,
-                    actual.TestString);
-
-                Assert.IsTrue(expected.IntData - actual.IntData < 0.00000000000000001);
-                Assert.IsTrue(expected.FloatData - actual.FloatData < 0.00000000000000001);
-                Assert.IsTrue(expected.DoubleData - actual.DoubleData < 0.00000000000000001);
-                Assert.IsTrue(expected.DecimalData - actual.DecimalData < 0.00000000000000001m);
-                Assert.IsTrue(expected.LongData - actual.LongData < 0.00000000000000001);
-
-                Assert.IsTrue(expected.OtherStruct.IntData - actual.OtherStruct.IntData < 0.00000000000000001);
-                Assert.IsTrue(expected.OtherStruct.DoubleData - actual.OtherStruct.DoubleData < 0.00000000000000001);
-
-                Assert.IsTrue(expected.Amount - actual.Amount < 0.00000000000000001);
-                Assert.IsTrue(expected.Time - actual.Time < new TimeSpan(0, 0, 1));
-
-                Assert.AreEqual(expected.Enum, actual.Enum);
+                CompareDataItem(expected, actual);
             }
+        }
+
+        private static void CompareDataItem(DataItem expected, DataItem actual)
+        {
+            //Assert.AreEqual(expected, actual);
+
+            Assert.AreEqual(expected.StockCode.Value,
+                actual.StockCode.Value);
+            Assert.AreEqual(expected.StockName.Value,
+                actual.StockName.Value);
+            Assert.AreEqual(expected.StockComment.Value,
+                actual.StockComment.Value);
+            Assert.AreEqual(expected.TestString,
+                actual.TestString);
+
+            Assert.IsTrue(expected.IntData - actual.IntData < 0.00000000000000001);
+            Assert.IsTrue(expected.FloatData - actual.FloatData < 0.00000000000000001);
+            Assert.IsTrue(expected.DoubleData - actual.DoubleData < 0.00000000000000001);
+            Assert.IsTrue(expected.DecimalData - actual.DecimalData < 0.00000000000000001m);
+            Assert.IsTrue(expected.LongData - actual.LongData < 0.00000000000000001);
+
+            Assert.IsTrue(expected.OtherStruct.IntData - actual.OtherStruct.IntData < 0.00000000000000001);
+            Assert.IsTrue(expected.OtherStruct.DoubleData - actual.OtherStruct.DoubleData < 0.00000000000000001);
+
+            Assert.IsTrue(expected.Amount - actual.Amount < 0.00000000000000001);
+            Assert.IsTrue(expected.Time - actual.Time < new TimeSpan(0, 0, 1));
+
+            Assert.AreEqual(expected.Enum, actual.Enum);
         }
 
         private string CreateFileAnyway(string fileName, int maxDataCount)
