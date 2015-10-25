@@ -47,7 +47,7 @@
     <Compile Include="DataMover\RightDataMover.cs" />
     <Compile Include="IMemoryMappedFile.cs" />
     <Compile Include="IMemoryMappedFileHeader.cs" />
-    <Compile Include="NonConcurrentMemoryMappedFile.cs" />
+    <Compile Include="NonConcurrentFile.cs" />
     <Compile Include="MemoryMappedFileBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="String128.cs" />

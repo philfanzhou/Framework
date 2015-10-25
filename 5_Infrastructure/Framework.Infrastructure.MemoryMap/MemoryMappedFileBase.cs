@@ -10,8 +10,38 @@ namespace Framework.Infrastructure.MemoryMap
     public class MemoryMappedFileBase : IDisposable
     {
         private MemoryMappedFile _mmf;
-        protected readonly string FullPath;
+        private readonly string _fullPath;
         protected readonly string FileName;
+
+        #region Constructor
+
+        protected MemoryMappedFileBase(string fullPath) : this(fullPath, -1) { }
+
+        protected MemoryMappedFileBase(string fullPath, long capacity)
+        {
+            this.FileName = Path.GetFileName(fullPath);
+            this._fullPath = fullPath;
+            string mapName = FileName;
+
+            bool createNewFile = capacity > 0;
+            if (createNewFile)
+            {
+                string directory = Path.GetDirectoryName(fullPath);
+                if(!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                // FileMode一定要使用CreateNew，否则可能出现覆盖文件的情况
+                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.CreateNew, mapName, capacity);
+            }
+            else
+            {
+                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open, mapName);
+            }
+        }
+
+        #endregion
 
         #region IDisposable Member
 
@@ -62,43 +92,20 @@ namespace Framework.Infrastructure.MemoryMap
 
         #endregion
 
+        #region Property
+        public string FullPath
+        {
+            get { return _fullPath; }
+        }
+        #endregion
+
         #region Override
 
         public override string ToString()
         {
             ThrowIfDisposed();
 
-            return this.FullPath;
-        }
-
-        #endregion
-
-        #region Constructor
-
-        protected MemoryMappedFileBase(string fullPath) : this(fullPath, -1) { }
-
-        protected MemoryMappedFileBase(string fullPath, long capacity)
-        {
-            this.FileName = Path.GetFileName(fullPath);
-            this.FullPath = fullPath;
-            string mapName = FileName;
-
-            bool createNewFile = capacity > 0;
-            if (createNewFile)
-            {
-                string directory = Path.GetDirectoryName(fullPath);
-                if(!Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-
-                // FileMode一定要使用CreateNew，否则可能出现覆盖文件的情况
-                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.CreateNew, mapName, capacity);
-            }
-            else
-            {
-                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open, mapName);
-            }
+            return this._fullPath;
         }
 
         #endregion

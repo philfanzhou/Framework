@@ -1,21 +1,47 @@
-﻿//using System;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Framework.Infrastructure.MemoryMap;
 
-//namespace Test.Infrastructure.MemoryMap
-//{
-//    public partial class MemoryMappedFileTest
-//    {
-//        [TestMethod]
-//        public void TestMethod1()
-//        {
-//            // Create file
-//            string path = CreateFileAnyway("MoreThanOneReader.dat", 1000);
+namespace Test.Infrastructure.MemoryMap
+{
+    public partial class MemoryMappedFileTest
+    {
+        private FileFactory factory = new FileFactory();
 
-//            var file1 = DataFile.Open(path);
+        [TestMethod]
+        public void TestMethod1()
+        {
 
-//            var file2 = DataFile.Open(path);
+        }
 
-//            var file3 = DataFile.Open(path);
-//        }
-//    }
-//}
+        private string CreateFileUseFactory(string fileName)
+        {
+            string path = Environment.CurrentDirectory + @"\" + fileName;
+            FileHeader header = CreateHeader(1000);
+
+            factory.Create(path, header);
+            return path;
+        }
+    }
+
+    internal class ConcurrentDataFile
+        : ConcurrentFile<FileHeader, DataItem>
+    {
+        internal ConcurrentDataFile(string path) : base(path) { }
+
+        internal ConcurrentDataFile(string path, FileHeader header) : base(path, header) { }
+    }
+
+    internal class FileFactory : ConcurrentFileFactory<ConcurrentDataFile, FileHeader, DataItem>
+    {
+        protected override ConcurrentDataFile DoCreate(string path, FileHeader fileHeader)
+        {
+            return new ConcurrentDataFile(path, fileHeader);
+        }
+
+        protected override ConcurrentDataFile DoOpen(string path)
+        {
+            return new ConcurrentDataFile(path);
+        }
+    }
+}

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace Framework.Infrastructure.MemoryMap
 {
-    public class NonConcurrentMemoryMappedFile<TDataHeader, TDataItem> : 
+    public class NonConcurrentFile<TDataHeader, TDataItem> : 
         MemoryMappedFileBase,
         IMemoryMappedFile<TDataHeader, TDataItem>
         where TDataHeader : struct, IMemoryMappedFileHeader
@@ -32,7 +32,7 @@ namespace Framework.Infrastructure.MemoryMap
         /// 打开文件调用的构造函数
         /// </summary>
         /// <param name="path"></param>
-        public NonConcurrentMemoryMappedFile(string path) : base(path)
+        public NonConcurrentFile(string path) : base(path)
         {
             this._header = ReadData<TDataHeader>(0, 1).FirstOrDefault();
         }
@@ -42,7 +42,7 @@ namespace Framework.Infrastructure.MemoryMap
         /// </summary>
         /// <param name="path"></param>
         /// <param name="maxDataCount"></param>
-        public NonConcurrentMemoryMappedFile(string path, TDataHeader fileHeader)
+        public NonConcurrentFile(string path, TDataHeader fileHeader)
             : base(path, CaculateCapacity(fileHeader))
         {
             if (fileHeader.MaxDataCount <= 0)

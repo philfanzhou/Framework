@@ -7,6 +7,8 @@ namespace Framework.Infrastructure.MemoryMap
         where TDataHeader : struct, IMemoryMappedFileHeader
         where TDataItem : struct
     {
+        string FullPath { get; }
+
         TDataHeader Header { get; }
 
         void Add(TDataItem item);

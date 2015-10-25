@@ -101,7 +101,7 @@ namespace Test.Infrastructure.MemoryMap
     }
 
     public class DataFile
-        : NonConcurrentMemoryMappedFile<FileHeader, DataItem>
+        : NonConcurrentFile<FileHeader, DataItem>
     {
         public DataFile(string path) : base(path) { }
 
@@ -117,6 +117,4 @@ namespace Test.Infrastructure.MemoryMap
             return new DataFile(path, fileHeader);
         }
     }
-
-
 }

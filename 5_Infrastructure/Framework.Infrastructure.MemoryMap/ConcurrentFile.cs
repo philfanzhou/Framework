@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Framework.Infrastructure.MemoryMap
 {
     public class ConcurrentFile<TDataHeader, TDataItem>
-        : NonConcurrentMemoryMappedFile<TDataHeader, TDataItem>
+        : NonConcurrentFile<TDataHeader, TDataItem>
         where TDataHeader : struct, IMemoryMappedFileHeader
         where TDataItem : struct
     {
-        private readonly ReaderWriterLock _rwLock = new ReaderWriterLock();
-        private readonly TimeSpan _timeOut = new TimeSpan(0, 0, 20); 
+        private ReaderWriterLockSlim _rwLock = new ReaderWriterLockSlim();
 
         #region Constructor
 
@@ -34,32 +29,69 @@ namespace Framework.Infrastructure.MemoryMap
         { }
         #endregion
 
-        //internal bool IsAlive
-        //{
-        //    get { return _rwLock.IsReaderLockHeld}
-        //}
+        protected override void Dispose(bool disposing)
+        {
+            if(disposing)
+            {
+                if(_rwLock != null)
+                {
+                    _rwLock.Dispose();
+                    _rwLock = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
+
+        internal bool IsAlive
+        {
+            get
+            {
+                ThrowIfDisposed();
+                return _rwLock.IsReadLockHeld || _rwLock.IsWriteLockHeld;
+            }
+        }
 
         protected override IEnumerable<TDataItem> DoRead(int index, int count)
         {
-            _rwLock.AcquireReaderLock(_timeOut);
-            var result = base.DoRead(index, count);
-            _rwLock.ReleaseReaderLock();
+            _rwLock.EnterReadLock();
+            IEnumerable<TDataItem> result;
+            try
+            {
+                result = base.DoRead(index, count);
+            }
+            finally
+            {
+                _rwLock.ExitReadLock();
+            }
 
             return result;
         }
 
         protected override void DoDelete(int index, int count)
         {
-            _rwLock.AcquireWriterLock(_timeOut);
-            base.DoDelete(index, count);
-            _rwLock.ReleaseWriterLock();
+            _rwLock.EnterWriteLock();
+            try
+            {
+                base.DoDelete(index, count);
+            }
+            finally
+            {
+                _rwLock.ExitWriteLock();
+            }
         }
 
         protected override void DoInsert(IEnumerable<TDataItem> items, int index, bool ChangeDataCount)
         {
-            _rwLock.AcquireWriterLock(_timeOut);
-            base.DoInsert(items, index, ChangeDataCount);
-            _rwLock.ReleaseWriterLock();
+            _rwLock.EnterWriteLock();
+            try
+            {
+                base.DoInsert(items, index, ChangeDataCount);
+            }
+            finally
+            {
+                _rwLock.ExitWriteLock();
+            }
         }
     }
 }
