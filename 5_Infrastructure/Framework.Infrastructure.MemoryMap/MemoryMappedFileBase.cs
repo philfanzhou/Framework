@@ -15,9 +15,9 @@ namespace Framework.Infrastructure.MemoryMap
 
         #region Constructor
 
-        protected MemoryMappedFileBase(string fullPath) : this(fullPath, 0) { }
+        protected MemoryMappedFileBase(string fullPath, MemoryMappedFileAccess access) : this(fullPath, 0, access) { }
 
-        protected MemoryMappedFileBase(string fullPath, long capacity)
+        protected MemoryMappedFileBase(string fullPath, long capacity, MemoryMappedFileAccess access)
         {
             this.FileName = Path.GetFileName(fullPath);
             this._fullPath = fullPath;
@@ -33,11 +33,11 @@ namespace Framework.Infrastructure.MemoryMap
                 }
 
                 // FileMode一定要使用CreateNew，否则可能出现覆盖文件的情况
-                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.CreateNew, mapName, capacity);
+                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.CreateNew, mapName, capacity, access);
             }
             else
             {
-                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open, mapName, capacity);
+                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open, mapName, capacity, access);
             }
         }
 

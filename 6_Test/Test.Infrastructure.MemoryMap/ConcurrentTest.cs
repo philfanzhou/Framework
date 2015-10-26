@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 
 namespace Test.Infrastructure.MemoryMap
 {
     public partial class MemoryMappedFileTest
     {
-        private FileFactory fileFactory = new FileFactory();
+        //private FileFactory fileFactory = new FileFactory();
 
         //[TestMethod]
         //public void TestMultiCreate()
@@ -140,57 +141,88 @@ namespace Test.Infrastructure.MemoryMap
             return str.GetHashCode().ToString(); ;
         }
 
+        //[TestMethod]
+        //public void TestResourceRelease()
+        //{
+        //    string fileName = "TestResourceRelease1.dat";
+        //    // 清理环境
+        //    string filePath = GetFilePath(fileName);
+        //    if (File.Exists(filePath))
+        //    {
+        //        File.Delete(filePath);
+        //    }
+        //    CreateFileUseFactory(fileName);
+
+        //    Assert.IsTrue(fileFactory.OpenedFiles >= 1);
+
+        //    Thread.Sleep(4000);
+        //    Assert.IsTrue(fileFactory.OpenedFiles == 0);
+        //}
+
         [TestMethod]
-        public void TestResourceRelease()
+        public void TestCreateAndOpen()
         {
-            string fileName = "TestResourceRelease1.dat";
+            string fileName = "testCreateAndOpen.dat";
             // 清理环境
             string filePath = GetFilePath(fileName);
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
             }
-            CreateFileUseFactory(fileName);
 
-            Assert.IsTrue(fileFactory.OpenedFiles >= 1);
-
-            Thread.Sleep(4000);
-            Assert.IsTrue(fileFactory.OpenedFiles == 0);
-        }
-
-        private string CreateFileUseFactory(string fileName)
-        {
-            string path = GetFilePath(fileName);
             FileHeader header = CreateHeader(1000);
 
-            fileFactory.Create(path, header);
-            return path;
+            ConcurrentDataFile file1 = null;
+            ConcurrentDataFile file2 = null;
+            try
+            {
+                using (var file = new ConcurrentDataFile(filePath, header, MemoryMappedFileAccess.ReadWrite))
+                { }
+
+                file1 = new ConcurrentDataFile(filePath, MemoryMappedFileAccess.CopyOnWrite);
+                file2 = new ConcurrentDataFile(filePath, MemoryMappedFileAccess.ReadExecute);
+
+            }
+            finally
+            {
+                file1.Dispose();
+                file2.Dispose();
+            }
         }
+
+        //private string CreateFileUseFactory(string fileName)
+        //{
+        //    string path = GetFilePath(fileName);
+        //    FileHeader header = CreateHeader(1000);
+
+        //    fileFactory.Create(path, header);
+        //    return path;
+        //}
 
         private string GetFilePath(string fileName)
         {
-            return Environment.CurrentDirectory + @"\" + fileName; ;
+            return Environment.CurrentDirectory + @"\" + fileName;
         }
     }
 
     internal class ConcurrentDataFile
         : ConcurrentFile<FileHeader, DataItem>
     {
-        internal ConcurrentDataFile(string path) : base(path) { }
+        internal ConcurrentDataFile(string path, MemoryMappedFileAccess access) : base(path, access) { }
 
-        internal ConcurrentDataFile(string path, FileHeader header) : base(path, header) { }
+        internal ConcurrentDataFile(string path, FileHeader header, MemoryMappedFileAccess access) : base(path, header, access) { }
     }
 
-    internal class FileFactory : ConcurrentFileFactory<ConcurrentDataFile, FileHeader, DataItem>
-    {
-        protected override ConcurrentDataFile DoCreate(string path, FileHeader fileHeader)
-        {
-            return new ConcurrentDataFile(path, fileHeader);
-        }
+    //internal class FileFactory : ConcurrentFileFactory<ConcurrentDataFile, FileHeader, DataItem>
+    //{
+    //    protected override ConcurrentDataFile DoCreate(string path, FileHeader fileHeader)
+    //    {
+    //        return new ConcurrentDataFile(path, fileHeader);
+    //    }
 
-        protected override ConcurrentDataFile DoOpen(string path)
-        {
-            return new ConcurrentDataFile(path);
-        }
-    }
+    //    protected override ConcurrentDataFile DoOpen(string path)
+    //    {
+    //        return new ConcurrentDataFile(path);
+    //    }
+    //}
 }

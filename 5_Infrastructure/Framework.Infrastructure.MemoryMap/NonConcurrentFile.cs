@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -33,18 +34,18 @@ namespace Framework.Infrastructure.MemoryMap
         /// 打开文件调用的构造函数
         /// </summary>
         /// <param name="path"></param>
-        public NonConcurrentFile(string path) : base(path)
+        public NonConcurrentFile(string path) : this(path, MemoryMappedFileAccess.ReadWrite)
         {
-            this._header = ReadData<TDataHeader>(0, 1).FirstOrDefault();
         }
 
-        /// <summary>
-        /// 创建文件调用的构造函数
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="maxDataCount"></param>
-        public NonConcurrentFile(string path, TDataHeader fileHeader)
-            : base(path, CaculateCapacity(fileHeader))
+        protected NonConcurrentFile(string path, MemoryMappedFileAccess access)
+            : base(path, access)
+        {
+            _header = ReadData<TDataHeader>(0, 1).FirstOrDefault();
+        }
+
+        protected NonConcurrentFile(string path, TDataHeader fileHeader, MemoryMappedFileAccess access)
+            : base(path, CaculateCapacity(fileHeader), access)
         {
             if (fileHeader.MaxDataCount <= 0)
                 throw new ArgumentOutOfRangeException("fileHeader");
@@ -53,6 +54,16 @@ namespace Framework.Infrastructure.MemoryMap
             fileHeader.DataCount = 0;
             this._header = fileHeader;
             WriteData(0, new TDataHeader[] { _header });
+        }
+
+        /// <summary>
+        /// 创建文件调用的构造函数
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="maxDataCount"></param>
+        public NonConcurrentFile(string path, TDataHeader fileHeader)
+            : this(path, fileHeader, MemoryMappedFileAccess.ReadWrite)
+        {
         }
         #endregion
 

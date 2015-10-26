@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO.MemoryMappedFiles;
 using System.Threading;
 
 namespace Framework.Infrastructure.MemoryMap
@@ -16,16 +17,21 @@ namespace Framework.Infrastructure.MemoryMap
         /// 打开文件调用的构造函数
         /// </summary>
         /// <param name="path"></param>
-        protected ConcurrentFile(string path) : base(path)
+        protected ConcurrentFile(string path, MemoryMappedFileAccess access) : base(path, access)
         { }
+
+        protected ConcurrentFile(string path) : this(path, MemoryMappedFileAccess.Read) { }
+
+        protected ConcurrentFile(string path, TDataHeader fileHeader)
+            : this(path, fileHeader, MemoryMappedFileAccess.ReadWrite) { }
 
         /// <summary>
         /// 创建文件调用的构造函数
         /// </summary>
         /// <param name="path"></param>
         /// <param name="maxDataCount"></param>
-        protected ConcurrentFile(string path, TDataHeader fileHeader)
-            : base(path, fileHeader)
+        protected ConcurrentFile(string path, TDataHeader fileHeader, MemoryMappedFileAccess access)
+            : base(path, fileHeader, access)
         { }
         #endregion
 
