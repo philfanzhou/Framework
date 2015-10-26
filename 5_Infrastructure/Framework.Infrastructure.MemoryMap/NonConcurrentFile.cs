@@ -7,7 +7,8 @@ namespace Framework.Infrastructure.MemoryMap
 {
     public class NonConcurrentFile<TDataHeader, TDataItem> : 
         MemoryMappedFileBase,
-        IMemoryMappedFile<TDataHeader, TDataItem>
+        IMemoryMappedFileModifier<TDataHeader, TDataItem>,
+        IMemoryMappedFileReader<TDataHeader, TDataItem>
         where TDataHeader : struct, IMemoryMappedFileHeader
         where TDataItem : struct
     {
@@ -200,11 +201,14 @@ namespace Framework.Infrastructure.MemoryMap
                 {
                     // 如果是在当前已有数据之后的位置插入，更新已有数据数量就需要特殊处理
                     // 等于是中间加入了空白数据
-                    UpdateDataCount(index - _header.DataCount + array.Length - 1);
+                    int dataCount = index - _header.DataCount + array.Length - 1;
+                    _header.DataCount += dataCount;
+                    WriteData(0, new TDataHeader[] { _header });
                 }
                 else
                 {
-                    UpdateDataCount(array.Length);
+                    _header.DataCount += array.Length;
+                    WriteData(0, new TDataHeader[] { _header });
                 }
             }
         }
@@ -244,12 +248,7 @@ namespace Framework.Infrastructure.MemoryMap
             }
 
             // 更新文件头
-            UpdateDataCount(-count);
-        }
-
-        protected virtual void UpdateDataCount(int number)
-        {
-            _header.DataCount += number;
+            _header.DataCount += -count;
             WriteData(0, new TDataHeader[] { _header });
         }
         #endregion

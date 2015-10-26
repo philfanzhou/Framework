@@ -11,11 +11,11 @@ namespace Framework.Infrastructure.MemoryMap
     {
         private MemoryMappedFile _mmf;
         private readonly string _fullPath;
-        protected readonly string FileName;
+        private readonly string FileName;
 
         #region Constructor
 
-        protected MemoryMappedFileBase(string fullPath) : this(fullPath, -1) { }
+        protected MemoryMappedFileBase(string fullPath) : this(fullPath, 0) { }
 
         protected MemoryMappedFileBase(string fullPath, long capacity)
         {
@@ -37,7 +37,7 @@ namespace Framework.Infrastructure.MemoryMap
             }
             else
             {
-                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open, mapName);
+                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open, mapName, capacity);
             }
         }
 
@@ -110,6 +110,40 @@ namespace Framework.Infrastructure.MemoryMap
 
         #endregion
 
+        #region Private Method
+        private static byte[] StructToBytes<T>(T structObj, int size)
+            where T : struct
+        {
+            IntPtr buffer = Marshal.AllocHGlobal(size);
+            try
+            {
+                Marshal.StructureToPtr(structObj, buffer, false);
+                byte[] bytes = new byte[size];
+                Marshal.Copy(buffer, bytes, 0, size);
+                return bytes;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
+        }
+
+        private static T BytesToStruct<T>(byte[] bytes, int size)
+            where T : struct
+        {
+            IntPtr buffer = Marshal.AllocHGlobal(size);
+            try
+            {
+                Marshal.Copy(bytes, 0, buffer, size);
+                return Marshal.PtrToStructure<T>(buffer);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
+        }
+        #endregion
+
         protected void MoveData(long position, long destination, long length)
         {
             var mover = DataMover.Create(position, destination, length);
@@ -147,38 +181,6 @@ namespace Framework.Infrastructure.MemoryMap
                     byte[] buffer = StructToBytes(dataList[i], size);
                     accessor.WriteArray<byte>(size * i, buffer, 0, buffer.Length);
                 }
-            }
-        }
-
-        private static byte[] StructToBytes<T>(T structObj, int size)
-            where T : struct
-        {
-            IntPtr buffer = Marshal.AllocHGlobal(size);
-            try
-            {
-                Marshal.StructureToPtr(structObj, buffer, false);
-                byte[] bytes = new byte[size];
-                Marshal.Copy(buffer, bytes, 0, size);
-                return bytes;
-            }
-            finally
-            {
-                Marshal.FreeHGlobal(buffer);
-            }
-        }
-
-        private static T BytesToStruct<T>(byte[] bytes, int size)
-            where T : struct
-        {
-            IntPtr buffer = Marshal.AllocHGlobal(size);
-            try
-            {
-                Marshal.Copy(bytes, 0, buffer, size);
-                return Marshal.PtrToStructure<T>(buffer);
-            }
-            finally
-            {
-                Marshal.FreeHGlobal(buffer);
             }
         }
     }

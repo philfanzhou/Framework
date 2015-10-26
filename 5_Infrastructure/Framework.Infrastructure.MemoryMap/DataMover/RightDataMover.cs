@@ -1,4 +1,6 @@
-﻿namespace Framework.Infrastructure.MemoryMap
+﻿using System.IO.MemoryMappedFiles;
+
+namespace Framework.Infrastructure.MemoryMap
 {
     internal class RightDataMover : DataMover
     {
@@ -6,7 +8,7 @@
             : base(position, destination, length)
         { }
 
-        public override void Move(System.IO.MemoryMappedFiles.MemoryMappedFile mmf)
+        public override void Move(MemoryMappedFile mmf)
         {
             long offset = base.AbsolutePosition - base.DataLength;
             long viewLength = base.AbsoluteDestination - base.AbsolutePosition + base.DataLength;

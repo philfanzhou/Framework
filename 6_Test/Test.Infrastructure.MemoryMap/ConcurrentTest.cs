@@ -12,122 +12,123 @@ namespace Test.Infrastructure.MemoryMap
     {
         private FileFactory fileFactory = new FileFactory();
 
-        [TestMethod]
-        public void TestMultiCreate()
-        {
-            string fileName = "TestCreateConcurrentFile.dat";
-            // 清理环境
-            string filePath = GetFilePath(fileName);
-            if(File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
+        //[TestMethod]
+        //public void TestMultiCreate()
+        //{
+        //    string fileName = "TestCreateConcurrentFile.dat";
+        //    // 清理环境
+        //    string filePath = GetFilePath(fileName);
+        //    if(File.Exists(filePath))
+        //    {
+        //        File.Delete(filePath);
+        //    }
 
-            ManualResetEvent eve = new ManualResetEvent(false);
-            List<Task> taskList = new List<Task>();
-            List<ConcurrentDataFile> fileList = new List<ConcurrentDataFile>();
-            int fileCount = 100;
-            for (int i = 0; i < fileCount; i++)
-            {
-                taskList.Add(Task.Factory.StartNew(() =>
-                {
-                    eve.WaitOne();
+        //    ManualResetEvent eve = new ManualResetEvent(false);
+        //    List<Task> taskList = new List<Task>();
+        //    List<ConcurrentDataFile> fileList = new List<ConcurrentDataFile>();
+        //    int fileCount = 100;
+        //    for (int i = 0; i < fileCount; i++)
+        //    {
+        //        taskList.Add(Task.Factory.StartNew(() =>
+        //        {
+        //            eve.WaitOne();
 
-                    string path = CreateFileUseFactory(fileName);
-                    fileList.Add(fileFactory.Open(path));
-                }));
-            }
+        //            string path = CreateFileUseFactory(fileName);
+        //            fileList.Add(fileFactory.Open(path));
+        //        }));
+        //    }
 
-            eve.Set();
-            try
-            {
-                Task.WaitAll(taskList.ToArray());
-            }
-            finally
-            {
-                Assert.AreEqual(fileCount, fileList.Count);
+        //    eve.Set();
+        //    try
+        //    {
+        //        Task.WaitAll(taskList.ToArray());
+        //    }
+        //    finally
+        //    {
+        //        Assert.AreEqual(fileCount, fileList.Count);
 
-                ConcurrentDataFile file0 = fileList[0];
-                foreach (var file in fileList)
-                {
-                    Assert.IsTrue(ReferenceEquals(file0, file));
-                }
-            }
-        }
+        //        ConcurrentDataFile file0 = fileList[0];
+        //        foreach (var file in fileList)
+        //        {
+        //            Assert.IsTrue(ReferenceEquals(file0, file));
+        //        }
+        //    }
+        //}
 
-        [TestMethod]
-        public void TestAddAndRead()
-        {
-            string fileName = "TestAddAndRead.dat";
-            // 清理环境
-            string filePath = GetFilePath(fileName);
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
+        //[TestMethod]
+        //[Ignore]
+        //public void TestAddAndRead()
+        //{
+        //    string fileName = "TestAddAndRead.dat";
+        //    // 清理环境
+        //    string filePath = GetFilePath(fileName);
+        //    if (File.Exists(filePath))
+        //    {
+        //        File.Delete(filePath);
+        //    }
 
-            CreateFileUseFactory(fileName);
+        //    CreateFileUseFactory(fileName);
 
-            ManualResetEvent startEvent = new ManualResetEvent(false);
-            List<Task> taskList = new List<Task>();
+        //    ManualResetEvent startEvent = new ManualResetEvent(false);
+        //    List<Task> taskList = new List<Task>();
 
-            int dataCount = 64;
-            List<ManualResetEvent> finishedEvent = new List<ManualResetEvent>();
-            Dictionary<string, DataItem> expectedList = new Dictionary<string, DataItem>();
-            List<Dictionary<string, DataItem>> actualResult = new List<Dictionary<string, DataItem>>();
-            for (int i = 0; i < dataCount; i++)
-            {
-                ManualResetEvent selfEvent = new ManualResetEvent(false);
-                finishedEvent.Add(selfEvent);
+        //    int dataCount = 64;
+        //    List<ManualResetEvent> finishedEvent = new List<ManualResetEvent>();
+        //    Dictionary<string, DataItem> expectedList = new Dictionary<string, DataItem>();
+        //    List<Dictionary<string, DataItem>> actualResult = new List<Dictionary<string, DataItem>>();
+        //    for (int i = 0; i < dataCount; i++)
+        //    {
+        //        ManualResetEvent selfEvent = new ManualResetEvent(false);
+        //        finishedEvent.Add(selfEvent);
 
-                var data = CreateDataItem(1)[0];
-                while (expectedList.ContainsKey(GetDataItemKey(data)))
-                {
-                    data = CreateDataItem(1)[0];
-                }
+        //        var data = CreateDataItem(1)[0];
+        //        while (expectedList.ContainsKey(GetDataItemKey(data)))
+        //        {
+        //            data = CreateDataItem(1)[0];
+        //        }
 
-                taskList.Add(Task.Factory.StartNew(() =>
-                {
-                    // 所有人等待发令同时开始
-                    startEvent.WaitOne();
+        //        taskList.Add(Task.Factory.StartNew(() =>
+        //        {
+        //            // 所有人等待发令同时开始
+        //            startEvent.WaitOne();
 
-                    // 作自己的工作
-                    var file = fileFactory.Open(filePath);
+        //            // 作自己的工作
+        //            var file = fileFactory.Open(filePath);
 
-                    expectedList.Add(GetDataItemKey(data), data);
-                    file.Add(data);
+        //            expectedList.Add(GetDataItemKey(data), data);
+        //            file.Add(data);
 
-                    // 完成了自己的任务
-                    selfEvent.Set();
+        //            // 完成了自己的任务
+        //            selfEvent.Set();
 
-                    // 等待其他人完成任务
-                    WaitHandle.WaitAll(finishedEvent.ToArray());
+        //            // 等待其他人完成任务
+        //            WaitHandle.WaitAll(finishedEvent.ToArray());
 
-                    Dictionary<string, DataItem> readData = new Dictionary<string, DataItem>();
-                    foreach (var dataItem in file.ReadAll())
-                    {
-                        readData.Add(GetDataItemKey(dataItem), dataItem);
-                    }
-                    actualResult.Add(readData);
-                }));
-            }
+        //            Dictionary<string, DataItem> readData = new Dictionary<string, DataItem>();
+        //            foreach (var dataItem in file.ReadAll())
+        //            {
+        //                readData.Add(GetDataItemKey(dataItem), dataItem);
+        //            }
+        //            actualResult.Add(readData);
+        //        }));
+        //    }
 
-            startEvent.Set();
-            try
-            {
-                Task.WaitAll(taskList.ToArray());
-            }
-            finally
-            {
-                foreach(var actualDic in actualResult)
-                {
-                    foreach(var keyValuePair in actualDic)
-                    {
-                        CompareDataItem(expectedList[keyValuePair.Key], keyValuePair.Value);
-                    }
-                }
-            }
-        }
+        //    startEvent.Set();
+        //    try
+        //    {
+        //        Task.WaitAll(taskList.ToArray());
+        //    }
+        //    finally
+        //    {
+        //        foreach(var actualDic in actualResult)
+        //        {
+        //            foreach(var keyValuePair in actualDic)
+        //            {
+        //                CompareDataItem(expectedList[keyValuePair.Key], keyValuePair.Value);
+        //            }
+        //        }
+        //    }
+        //}
 
         private string GetDataItemKey(DataItem dataItem)
         {

@@ -45,6 +45,8 @@
     <Compile Include="DataMover\DataMover.cs" />
     <Compile Include="DataMover\LeftDataMover.cs" />
     <Compile Include="DataMover\RightDataMover.cs" />
+    <Compile Include="IMemoryMappedFileModifier.cs" />
+    <Compile Include="IMemoryMappedFileReader.cs" />
     <Compile Include="IMemoryMappedFile.cs" />
     <Compile Include="IMemoryMappedFileHeader.cs" />
     <Compile Include="NonConcurrentFile.cs" />

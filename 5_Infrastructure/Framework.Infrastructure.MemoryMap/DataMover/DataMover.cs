@@ -46,7 +46,7 @@ namespace Framework.Infrastructure.MemoryMap
             stream.Write(Buffer, 0, Buffer.Length);
         }
 
-        public abstract void Move(System.IO.MemoryMappedFiles.MemoryMappedFile mmf);
+        public abstract void Move(MemoryMappedFile mmf);
 
         public static DataMover Create(long position, long destination, long length)
         {
