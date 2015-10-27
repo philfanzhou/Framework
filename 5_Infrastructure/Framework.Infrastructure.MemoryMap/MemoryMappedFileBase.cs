@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Framework.Infrastructure.MemoryMap
@@ -11,6 +12,7 @@ namespace Framework.Infrastructure.MemoryMap
     {
         private MemoryMappedFile _mmf;
         private readonly string _fullPath;
+        private readonly string _mapName;
 
         #region Constructor
 
@@ -18,28 +20,36 @@ namespace Framework.Infrastructure.MemoryMap
 
         protected MemoryMappedFileBase(string fullPath, long capacity)
         {
-            this._fullPath = fullPath;
-            string mapName = Path.GetFileName(fullPath);
+            _fullPath = fullPath;
+            _mapName = fullPath.GetHashCode().ToString();
+            this._mmf = NewMethod(fullPath, _mapName, capacity);
+        }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private static MemoryMappedFile NewMethod(string fullPath, string mapName, long capacity)
+        {
+            MemoryMappedFile result;
             bool createNewFile = capacity > 0;
             if (createNewFile)
             {
                 string directory = Path.GetDirectoryName(fullPath);
-                if(!Directory.Exists(directory))
+                if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
 
                 // FileMode一定要使用CreateNew，否则可能出现覆盖文件的情况
-                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.CreateNew, mapName, capacity);
+                result = MemoryMappedFile.CreateFromFile(fullPath, FileMode.CreateNew, mapName, capacity);
             }
             else
             {
-                if (!TryOpenExisting(mapName, out this._mmf))
+                if (!TryOpenExisting(mapName, out result))
                 {
-                    this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open, mapName, capacity);
+                    result = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open, mapName, capacity);
                 }
             }
+
+            return result;
         }
 
         private static bool TryOpenExisting(string mapName, out MemoryMappedFile memoryMappedFile)
@@ -50,7 +60,7 @@ namespace Framework.Infrastructure.MemoryMap
             {
                 mmf = MemoryMappedFile.OpenExisting(mapName);
             }
-            catch
+            catch(Exception e)
             {
                 mmf = null;
             }
@@ -121,6 +131,14 @@ namespace Framework.Infrastructure.MemoryMap
             {
                 ThrowIfDisposed();
                 return _fullPath;
+            }
+        }
+
+        protected string MapName
+        {
+            get
+            {
+                return _mapName;
             }
         }
         #endregion

@@ -26,7 +26,6 @@ namespace Framework.Infrastructure.MemoryMap
         #endregion
 
         #region Constructor
-
         /// <summary>
         /// 打开文件调用的构造函数
         /// </summary>
@@ -48,23 +47,25 @@ namespace Framework.Infrastructure.MemoryMap
             fileHeader.DataCount = 0;
             WriteData(0, new TDataHeader[] { fileHeader });
         }
+
+        private static long CaculateCapacity(TDataHeader fileHeader)
+        {
+            return fileHeader.MaxDataCount * Marshal.SizeOf(typeof(TDataItem)) + Marshal.SizeOf(typeof(TDataHeader));
+        }
         #endregion
 
         #region Property
-
-        public TDataHeader Header
+        public virtual TDataHeader Header
         {
             get
             {
                 ThrowIfDisposed();
-                return ReadData<TDataHeader>(0, 1).FirstOrDefault();
+                return GetHeader();
             }
         }
-
         #endregion
 
         #region IMemoryMappedFile Members
-
         public virtual void Add(TDataItem item)
         {
             Add(new[] { item });
@@ -72,7 +73,8 @@ namespace Framework.Infrastructure.MemoryMap
 
         public virtual void Add(IEnumerable<TDataItem> items)
         {
-            Insert(items, Header.DataCount);
+            ThrowIfDisposed();
+            Insert(items, GetHeader().DataCount);
         }
 
         public virtual void Delete(int index)
@@ -82,12 +84,14 @@ namespace Framework.Infrastructure.MemoryMap
 
         public virtual void Delete(int index, int count)
         {
+            ThrowIfDisposed();
             DoDelete(index, count);
         }
 
         public virtual void DeleteAll()
         {
-            Delete(0, Header.DataCount);
+            ThrowIfDisposed();
+            Delete(0, GetHeader().DataCount);
         }
 
         public virtual void Update(TDataItem item, int index)
@@ -97,6 +101,7 @@ namespace Framework.Infrastructure.MemoryMap
 
         public virtual void Update(IEnumerable<TDataItem> items, int index)
         {
+            ThrowIfDisposed();
             DoInsert(items, index, false);
         }
 
@@ -107,12 +112,14 @@ namespace Framework.Infrastructure.MemoryMap
 
         public virtual IEnumerable<TDataItem> Read(int index, int count)
         {
+            ThrowIfDisposed();
             return DoRead(index, count);
         }
 
         public virtual IEnumerable<TDataItem> ReadAll()
         {
-            return Read(0, Header.DataCount);
+            ThrowIfDisposed();
+            return Read(0, GetHeader().DataCount);
         }
 
         public virtual void Insert(TDataItem item, int index)
@@ -122,23 +129,22 @@ namespace Framework.Infrastructure.MemoryMap
 
         public virtual void Insert(IEnumerable<TDataItem> items, int index)
         {
+            ThrowIfDisposed();
             DoInsert(items, index, true);
         }
-
         #endregion
 
-        #region Protected Method
-        protected virtual IEnumerable<TDataItem> DoRead(int index, int count)
+        #region Private Method
+        private IEnumerable<TDataItem> DoRead(int index, int count)
         {
-            ThrowIfDisposed();
-            TDataHeader header = this.Header;
+            TDataHeader header = GetHeader();
             if (index > header.DataCount || index < 0)
                 throw new ArgumentOutOfRangeException("index");
 
             if (count < 0 || index + count > header.DataCount)
                 throw new ArgumentOutOfRangeException("count");
 
-            if(count == 0)
+            if (count == 0)
             {
                 return new TDataItem[0];
             }
@@ -147,14 +153,12 @@ namespace Framework.Infrastructure.MemoryMap
             return ReadData<TDataItem>(offset, count);
         }
 
-        protected virtual void DoInsert(IEnumerable<TDataItem> items, int index, bool ChangeDataCount)
+        private void DoInsert(IEnumerable<TDataItem> items, int index, bool ChangeDataCount)
         {
-            ThrowIfDisposed();
-
             if (null == items)
                 throw new ArgumentNullException("items");
 
-            TDataHeader header = this.Header;
+            TDataHeader header = GetHeader();
             if (index > header.MaxDataCount || index < 0)
                 throw new ArgumentOutOfRangeException("index");
 
@@ -176,7 +180,7 @@ namespace Framework.Infrastructure.MemoryMap
                 position += _dataItemSize * header.DataCount;
                 // 数据需要移动到的位置
                 long destination = position;
-                destination += _dataItemSize*array.Length;
+                destination += _dataItemSize * array.Length;
                 // 需要移动的byte长度
                 long length = _dataItemSize * (header.DataCount - index);
 
@@ -206,12 +210,10 @@ namespace Framework.Infrastructure.MemoryMap
                 }
             }
         }
-        
-        protected virtual void DoDelete(int index, int count)
-        {
-            ThrowIfDisposed();
 
-            TDataHeader header = this.Header;
+        private void DoDelete(int index, int count)
+        {
+            TDataHeader header = GetHeader();
             if (index >= header.MaxDataCount || index < 0)
                 throw new ArgumentOutOfRangeException("index");
 
@@ -246,12 +248,10 @@ namespace Framework.Infrastructure.MemoryMap
             header.DataCount += -count;
             WriteData(0, new TDataHeader[] { header });
         }
-        #endregion
 
-        #region Pirvate Method
-        private static long CaculateCapacity(TDataHeader fileHeader)
+        private TDataHeader GetHeader()
         {
-            return fileHeader.MaxDataCount * Marshal.SizeOf(typeof(TDataItem)) + Marshal.SizeOf(typeof(TDataHeader));
+            return ReadData<TDataHeader>(0, 1).FirstOrDefault();
         }
         #endregion
     }

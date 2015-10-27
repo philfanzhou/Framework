@@ -7,130 +7,91 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
+using System.Collections.Concurrent;
 
 namespace Test.Infrastructure.MemoryMap
 {
     public partial class MemoryMappedFileTest
     {
-        //private FileFactory fileFactory = new FileFactory();
+        [TestMethod]
+        public void TestAddAndRead()
+        {
+            string filePath = CreateConcurrentFileAnyway("TestAddAndRead.dat", 1000);
 
-        //[TestMethod]
-        //public void TestMultiCreate()
-        //{
-        //    string fileName = "TestCreateConcurrentFile.dat";
-        //    // 清理环境
-        //    string filePath = GetFilePath(fileName);
-        //    if(File.Exists(filePath))
-        //    {
-        //        File.Delete(filePath);
-        //    }
+            ManualResetEvent startEvent = new ManualResetEvent(false);
+            List<Task> taskList = new List<Task>();
 
-        //    ManualResetEvent eve = new ManualResetEvent(false);
-        //    List<Task> taskList = new List<Task>();
-        //    List<ConcurrentDataFile> fileList = new List<ConcurrentDataFile>();
-        //    int fileCount = 100;
-        //    for (int i = 0; i < fileCount; i++)
-        //    {
-        //        taskList.Add(Task.Factory.StartNew(() =>
-        //        {
-        //            eve.WaitOne();
+            int dataCount = 5;
+            Dictionary<string, DataItem> expectedDictionary = new Dictionary<string, DataItem>();
+            List<Dictionary<string, DataItem>> actualResult = new List<Dictionary<string, DataItem>>();
+            ConcurrentQueue<DataItem> queue = new ConcurrentQueue<DataItem>();
+            List<ManualResetEvent> finishedEvent = new List<ManualResetEvent>();
+            for(int i = 0; i < dataCount; i++)
+            {
+                ManualResetEvent eve = new ManualResetEvent(false);
+                finishedEvent.Add(eve);
+            }
 
-        //            string path = CreateFileUseFactory(fileName);
-        //            fileList.Add(fileFactory.Open(path));
-        //        }));
-        //    }
+            for(int i = 0; i < dataCount; i++)
+            {
+                var data = CreateDataItem(1)[0];
+                while (expectedDictionary.ContainsKey(GetDataItemKey(data)))
+                {
+                    data = CreateDataItem(1)[0];
+                }
+                expectedDictionary.Add(GetDataItemKey(data), data);
+                queue.Enqueue(data);
+            }
 
-        //    eve.Set();
-        //    try
-        //    {
-        //        Task.WaitAll(taskList.ToArray());
-        //    }
-        //    finally
-        //    {
-        //        Assert.AreEqual(fileCount, fileList.Count);
+            for (int i = 0; i < dataCount; i++)
+            {
 
-        //        ConcurrentDataFile file0 = fileList[0];
-        //        foreach (var file in fileList)
-        //        {
-        //            Assert.IsTrue(ReferenceEquals(file0, file));
-        //        }
-        //    }
-        //}
+                ManualResetEvent selfEvent = finishedEvent[i];
+                taskList.Add(Task.Factory.StartNew(() =>
+                {
+                    // 所有人等待发令同时开始
+                    startEvent.WaitOne();
 
-        //[TestMethod]
-        //[Ignore]
-        //public void TestAddAndRead()
-        //{
-        //    string fileName = "TestAddAndRead.dat";
-        //    // 清理环境
-        //    string filePath = GetFilePath(fileName);
-        //    if (File.Exists(filePath))
-        //    {
-        //        File.Delete(filePath);
-        //    }
+                    // 作自己的工作
+                    DataItem data;
+                    if(!queue.TryDequeue(out data))
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
+                    var file = ConcurrentDataFile.Open(filePath);
+                    file.Add(data);
 
-        //    CreateFileUseFactory(fileName);
+                    // 完成了自己的任务
+                    selfEvent.Set();
 
-        //    ManualResetEvent startEvent = new ManualResetEvent(false);
-        //    List<Task> taskList = new List<Task>();
+                    // 等待其他人完成任务
+                    WaitHandle.WaitAll(finishedEvent.ToArray());
 
-        //    int dataCount = 64;
-        //    List<ManualResetEvent> finishedEvent = new List<ManualResetEvent>();
-        //    Dictionary<string, DataItem> expectedList = new Dictionary<string, DataItem>();
-        //    List<Dictionary<string, DataItem>> actualResult = new List<Dictionary<string, DataItem>>();
-        //    for (int i = 0; i < dataCount; i++)
-        //    {
-        //        ManualResetEvent selfEvent = new ManualResetEvent(false);
-        //        finishedEvent.Add(selfEvent);
+                    Dictionary<string, DataItem> readData = new Dictionary<string, DataItem>();
+                    foreach (var dataItem in file.ReadAll())
+                    {
+                        readData.Add(GetDataItemKey(dataItem), dataItem);
+                    }
+                    actualResult.Add(readData);
+                }));
+            }
 
-        //        var data = CreateDataItem(1)[0];
-        //        while (expectedList.ContainsKey(GetDataItemKey(data)))
-        //        {
-        //            data = CreateDataItem(1)[0];
-        //        }
+            startEvent.Set();
+            Task.WaitAll(taskList.ToArray());
 
-        //        taskList.Add(Task.Factory.StartNew(() =>
-        //        {
-        //            // 所有人等待发令同时开始
-        //            startEvent.WaitOne();
+            var file2 = ConcurrentDataFile.Open(filePath);
+            Assert.AreEqual(expectedDictionary.Count, file2.ReadAll().ToList().Count);
 
-        //            // 作自己的工作
-        //            var file = fileFactory.Open(filePath);
+            foreach (var actualDictionary in actualResult)
+            {
+                Assert.AreEqual(expectedDictionary.Count, actualDictionary.Count);
 
-        //            expectedList.Add(GetDataItemKey(data), data);
-        //            file.Add(data);
-
-        //            // 完成了自己的任务
-        //            selfEvent.Set();
-
-        //            // 等待其他人完成任务
-        //            WaitHandle.WaitAll(finishedEvent.ToArray());
-
-        //            Dictionary<string, DataItem> readData = new Dictionary<string, DataItem>();
-        //            foreach (var dataItem in file.ReadAll())
-        //            {
-        //                readData.Add(GetDataItemKey(dataItem), dataItem);
-        //            }
-        //            actualResult.Add(readData);
-        //        }));
-        //    }
-
-        //    startEvent.Set();
-        //    try
-        //    {
-        //        Task.WaitAll(taskList.ToArray());
-        //    }
-        //    finally
-        //    {
-        //        foreach(var actualDic in actualResult)
-        //        {
-        //            foreach(var keyValuePair in actualDic)
-        //            {
-        //                CompareDataItem(expectedList[keyValuePair.Key], keyValuePair.Value);
-        //            }
-        //        }
-        //    }
-        //}
+                foreach (var keyValuePair in actualDictionary)
+                {
+                    CompareDataItem(expectedDictionary[keyValuePair.Key], keyValuePair.Value);
+                }
+            }
+        }
 
         private string GetDataItemKey(DataItem dataItem)
         {
