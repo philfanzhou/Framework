@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Framework.Infrastructure.MemoryMap
@@ -16,7 +17,7 @@ namespace Framework.Infrastructure.MemoryMap
             {
                 if (null == instance)
                 {
-                    System.Threading.Interlocked.CompareExchange(ref instance, new LockPool(), null);
+                    Interlocked.CompareExchange(ref instance, new LockPool(), null);
                 }
 
                 return instance;
@@ -34,28 +35,28 @@ namespace Framework.Infrastructure.MemoryMap
         private object _lockObj = new object();
         private Dictionary<string, ReadWriteLockData> _cache = new Dictionary<string, ReadWriteLockData>();
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         internal ReaderWriterLockSlim GetLock(string key)
         {
             ReaderWriterLockSlim result = null;
             lock (_lockObj)
             {
-                if(_cache.ContainsKey(key))
-                {
-                    _cache[key].Count++;
-                    result = _cache[key].Lock;
-                }
-                else
+                if(!_cache.ContainsKey(key))
                 {
                     ReadWriteLockData data = new ReadWriteLockData();
-                    data.Count++;
-                    data.Lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-                    result = data.Lock;
+                    data.Count = 0;
+                    data.Lock = new ReaderWriterLockSlim();
+                    _cache.Add(key, data);
                 }
+
+                _cache[key].Count++;
+                result = _cache[key].Lock;
             }
 
             return result;
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         internal void ReleaseLock(string key)
         {
             lock (_lockObj)

@@ -59,7 +59,6 @@ namespace Framework.Infrastructure.MemoryMap
         {
             get
             {
-                ThrowIfDisposed();
                 return GetHeader();
             }
         }
@@ -68,68 +67,61 @@ namespace Framework.Infrastructure.MemoryMap
         #region IMemoryMappedFile Members
         public virtual void Add(TDataItem item)
         {
-            Add(new[] { item });
+            DoInsert(new[] { item }, GetHeader().DataCount, true);
         }
 
         public virtual void Add(IEnumerable<TDataItem> items)
         {
-            ThrowIfDisposed();
-            Insert(items, GetHeader().DataCount);
+            DoInsert(items, GetHeader().DataCount, true);
         }
 
         public virtual void Delete(int index)
         {
-            Delete(index, 1);
+            DoDelete(index, 1);
         }
 
         public virtual void Delete(int index, int count)
         {
-            ThrowIfDisposed();
             DoDelete(index, count);
         }
 
         public virtual void DeleteAll()
         {
-            ThrowIfDisposed();
-            Delete(0, GetHeader().DataCount);
+            DoDelete(0, GetHeader().DataCount);
         }
 
         public virtual void Update(TDataItem item, int index)
         {
-            Update(new[] { item }, index);
+            DoInsert(new[] { item }, index, false);
         }
 
         public virtual void Update(IEnumerable<TDataItem> items, int index)
         {
-            ThrowIfDisposed();
             DoInsert(items, index, false);
         }
 
         public virtual TDataItem Read(int index)
         {
-            return Read(index, 1).FirstOrDefault();
+            return DoRead(index, 1).FirstOrDefault();
         }
 
         public virtual IEnumerable<TDataItem> Read(int index, int count)
         {
-            ThrowIfDisposed();
             return DoRead(index, count);
         }
 
         public virtual IEnumerable<TDataItem> ReadAll()
         {
-            ThrowIfDisposed();
-            return Read(0, GetHeader().DataCount);
+            return DoRead(0, GetHeader().DataCount);
         }
 
         public virtual void Insert(TDataItem item, int index)
         {
-            Insert(new[] { item }, index);
+            DoInsert(new[] { item }, index, true);
         }
 
         public virtual void Insert(IEnumerable<TDataItem> items, int index)
         {
-            ThrowIfDisposed();
             DoInsert(items, index, true);
         }
         #endregion
@@ -137,6 +129,8 @@ namespace Framework.Infrastructure.MemoryMap
         #region Private Method
         private IEnumerable<TDataItem> DoRead(int index, int count)
         {
+            ThrowIfDisposed();
+
             TDataHeader header = GetHeader();
             if (index > header.DataCount || index < 0)
                 throw new ArgumentOutOfRangeException("index");
@@ -155,6 +149,8 @@ namespace Framework.Infrastructure.MemoryMap
 
         private void DoInsert(IEnumerable<TDataItem> items, int index, bool ChangeDataCount)
         {
+            ThrowIfDisposed();
+
             if (null == items)
                 throw new ArgumentNullException("items");
 
@@ -213,6 +209,8 @@ namespace Framework.Infrastructure.MemoryMap
 
         private void DoDelete(int index, int count)
         {
+            ThrowIfDisposed();
+
             TDataHeader header = GetHeader();
             if (index >= header.MaxDataCount || index < 0)
                 throw new ArgumentOutOfRangeException("index");
@@ -251,6 +249,7 @@ namespace Framework.Infrastructure.MemoryMap
 
         private TDataHeader GetHeader()
         {
+            ThrowIfDisposed();
             return ReadData<TDataHeader>(0, 1).FirstOrDefault();
         }
         #endregion

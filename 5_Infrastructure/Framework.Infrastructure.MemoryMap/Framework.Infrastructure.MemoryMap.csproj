@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConcurrentFile.cs" />
+    <Compile Include="ConcurrentFileFactory.cs" />
     <Compile Include="DataMover\DataMover.cs" />
     <Compile Include="DataMover\LeftDataMover.cs" />
     <Compile Include="DataMover\RightDataMover.cs" />
@@ -48,7 +49,7 @@
     <Compile Include="Interface\IMemoryMappedFileReader.cs" />
     <Compile Include="Interface\IMemoryMappedFile.cs" />
     <Compile Include="Interface\IMemoryMappedFileHeader.cs" />
-    <Compile Include="LockPool.cs" />
+    <Compile Include="Utility\LockPool.cs" />
     <Compile Include="NonConcurrentFile.cs" />
     <Compile Include="MemoryMappedFileBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

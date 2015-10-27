@@ -21,7 +21,7 @@ namespace Test.Infrastructure.MemoryMap
             ManualResetEvent startEvent = new ManualResetEvent(false);
             List<Task> taskList = new List<Task>();
 
-            int dataCount = 5;
+            int dataCount = 64;
             Dictionary<string, DataItem> expectedDictionary = new Dictionary<string, DataItem>();
             List<Dictionary<string, DataItem>> actualResult = new List<Dictionary<string, DataItem>>();
             ConcurrentQueue<DataItem> queue = new ConcurrentQueue<DataItem>();
@@ -93,34 +93,11 @@ namespace Test.Infrastructure.MemoryMap
             }
         }
 
-        private string GetDataItemKey(DataItem dataItem)
-        {
-            string str = dataItem.StockCode.Value
-                + dataItem.StockName.Value
-                + dataItem.IntData
-                + dataItem.LongData
-                + dataItem.FloatData;
-            return str.GetHashCode().ToString(); ;
-        }
-
-        private string CreateConcurrentFileAnyway(string fileName, int maxDataCount)
-        {
-            string path = Environment.CurrentDirectory + @"\" + fileName;
-
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-            // 创建新的文件
-            using (ConcurrentDataFile.Create(path, CreateHeader(maxDataCount))) { }
-            return path;
-        }
-
         [TestMethod]
         public void TestOpenAgain()
         {
             string path = CreateConcurrentFileAnyway("TestOpenAgain.dat", 100);
-            ConcurrentDataFile file1= null;
+            ConcurrentDataFile file1 = null;
             ConcurrentDataFile file2 = null;
             ConcurrentDataFile file3 = null;
             try
@@ -173,6 +150,29 @@ namespace Test.Infrastructure.MemoryMap
                 file1.Dispose();
                 file2.Dispose();
             }
+        }
+
+        private string GetDataItemKey(DataItem dataItem)
+        {
+            string str = dataItem.StockCode.Value
+                + dataItem.StockName.Value
+                + dataItem.IntData
+                + dataItem.LongData
+                + dataItem.FloatData;
+            return str.GetHashCode().ToString(); ;
+        }
+
+        private string CreateConcurrentFileAnyway(string fileName, int maxDataCount)
+        {
+            string path = Environment.CurrentDirectory + @"\" + fileName;
+
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            // 创建新的文件
+            using (ConcurrentDataFile.Create(path, CreateHeader(maxDataCount))) { }
+            return path;
         }
 
         private void TestThreeFile(ConcurrentDataFile file1, ConcurrentDataFile file2, ConcurrentDataFile file3)
