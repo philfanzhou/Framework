@@ -6,6 +6,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
+using System.Linq;
 
 namespace Test.Infrastructure.MemoryMap
 {
@@ -141,88 +142,134 @@ namespace Test.Infrastructure.MemoryMap
             return str.GetHashCode().ToString(); ;
         }
 
-        //[TestMethod]
-        //public void TestResourceRelease()
-        //{
-        //    string fileName = "TestResourceRelease1.dat";
-        //    // 清理环境
-        //    string filePath = GetFilePath(fileName);
-        //    if (File.Exists(filePath))
-        //    {
-        //        File.Delete(filePath);
-        //    }
-        //    CreateFileUseFactory(fileName);
+        private string CreateConcurrentFileAnyway(string fileName, int maxDataCount)
+        {
+            string path = Environment.CurrentDirectory + @"\" + fileName;
 
-        //    Assert.IsTrue(fileFactory.OpenedFiles >= 1);
-
-        //    Thread.Sleep(4000);
-        //    Assert.IsTrue(fileFactory.OpenedFiles == 0);
-        //}
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            // 创建新的文件
+            using (ConcurrentDataFile.Create(path, CreateHeader(maxDataCount))) { }
+            return path;
+        }
 
         [TestMethod]
-        public void TestCreateAndOpen()
+        public void TestOpenAgain()
         {
-            string fileName = "testCreateAndOpen.dat";
-            // 清理环境
-            string filePath = GetFilePath(fileName);
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
-            FileHeader header = CreateHeader(1000);
-
-            ConcurrentDataFile file1 = null;
+            string path = CreateConcurrentFileAnyway("TestOpenAgain.dat", 100);
+            ConcurrentDataFile file1= null;
             ConcurrentDataFile file2 = null;
+            ConcurrentDataFile file3 = null;
             try
             {
-                using (var file = new ConcurrentDataFile(filePath, header, MemoryMappedFileAccess.ReadWrite))
-                { }
+                file1 = ConcurrentDataFile.Open(path);
+                file2 = ConcurrentDataFile.Open(path);
+                file3 = ConcurrentDataFile.Open(path);
+                Assert.IsNotNull(file1);
+                Assert.IsNotNull(file2);
+                Assert.IsNotNull(file3);
 
-                file1 = new ConcurrentDataFile(filePath, MemoryMappedFileAccess.CopyOnWrite);
-                file2 = new ConcurrentDataFile(filePath, MemoryMappedFileAccess.ReadExecute);
-
+                TestThreeFile(file1, file2, file3);
             }
             finally
             {
                 file1.Dispose();
                 file2.Dispose();
+                file3.Dispose();
             }
         }
 
-        //private string CreateFileUseFactory(string fileName)
-        //{
-        //    string path = GetFilePath(fileName);
-        //    FileHeader header = CreateHeader(1000);
-
-        //    fileFactory.Create(path, header);
-        //    return path;
-        //}
-
-        private string GetFilePath(string fileName)
+        [TestMethod]
+        public void TestCreateAndOpenAgain()
         {
-            return Environment.CurrentDirectory + @"\" + fileName;
+            string fileName = "TestCreateAndOpenAgain.dat";
+            string path = Environment.CurrentDirectory + @"\" + fileName;
+
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            // 创建新的文件
+            ConcurrentDataFile createdFile = null;
+            ConcurrentDataFile file1 = null;
+            ConcurrentDataFile file2 = null;
+            try
+            {
+                createdFile = ConcurrentDataFile.Create(path, CreateHeader(100));
+                file1 = ConcurrentDataFile.Open(path);
+                file2 = ConcurrentDataFile.Open(path);
+                Assert.IsNotNull(createdFile);
+                Assert.IsNotNull(file1);
+                Assert.IsNotNull(file2);
+
+                TestThreeFile(createdFile, file1, file2);
+            }
+            finally
+            {
+                createdFile.Dispose();
+                file1.Dispose();
+                file2.Dispose();
+            }
+        }
+
+        private void TestThreeFile(ConcurrentDataFile file1, ConcurrentDataFile file2, ConcurrentDataFile file3)
+        {
+            List<DataItem> expectedList = new List<DataItem>();
+            DataItem data;
+
+            data = CreateDataItem(1)[0];
+            expectedList.Add(data);
+            file1.Add(data);//
+            CompareListItem(expectedList, file2.ReadAll().ToList());
+            CompareListItem(expectedList, file3.ReadAll().ToList());
+
+            data = CreateDataItem(1)[0];
+            expectedList.Add(data);
+            file2.Add(data);//
+            CompareListItem(expectedList, file1.ReadAll().ToList());
+            CompareListItem(expectedList, file3.ReadAll().ToList());
+
+            data = CreateDataItem(1)[0];
+            expectedList.Add(data);
+            file3.Add(data);//
+            CompareListItem(expectedList, file1.ReadAll().ToList());
+            CompareListItem(expectedList, file2.ReadAll().ToList());
+
+            // 关闭直接映射到磁盘的文件后，测试其余两个文件
+            file1.Dispose();
+            data = CreateDataItem(1)[0];
+            expectedList.Add(data);
+            file3.Add(data);//
+            CompareListItem(expectedList, file2.ReadAll().ToList());
+
+            // 再次打开一个文件
+            file1 = ConcurrentDataFile.Open(file2.FullPath);
+            data = CreateDataItem(1)[0];
+            expectedList.Add(data);
+            file1.Add(data);//
+            CompareListItem(expectedList, file1.ReadAll().ToList());
+            CompareListItem(expectedList, file2.ReadAll().ToList());
+            CompareListItem(expectedList, file3.ReadAll().ToList());
         }
     }
 
     internal class ConcurrentDataFile
         : ConcurrentFile<FileHeader, DataItem>
     {
-        internal ConcurrentDataFile(string path, MemoryMappedFileAccess access) : base(path, access) { }
+        internal ConcurrentDataFile(string path) : base(path) { }
 
-        internal ConcurrentDataFile(string path, FileHeader header, MemoryMappedFileAccess access) : base(path, header, access) { }
+        internal ConcurrentDataFile(string path, FileHeader header) : base(path, header) { }
+
+        public static ConcurrentDataFile Open(string path)
+        {
+            return new ConcurrentDataFile(path);
+        }
+
+        public static ConcurrentDataFile Create(string path, FileHeader fileHeader)
+        {
+            return new ConcurrentDataFile(path, fileHeader);
+        }
     }
-
-    //internal class FileFactory : ConcurrentFileFactory<ConcurrentDataFile, FileHeader, DataItem>
-    //{
-    //    protected override ConcurrentDataFile DoCreate(string path, FileHeader fileHeader)
-    //    {
-    //        return new ConcurrentDataFile(path, fileHeader);
-    //    }
-
-    //    protected override ConcurrentDataFile DoOpen(string path)
-    //    {
-    //        return new ConcurrentDataFile(path);
-    //    }
-    //}
 }

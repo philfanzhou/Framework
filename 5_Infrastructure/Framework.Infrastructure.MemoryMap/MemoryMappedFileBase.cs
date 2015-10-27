@@ -11,17 +11,15 @@ namespace Framework.Infrastructure.MemoryMap
     {
         private MemoryMappedFile _mmf;
         private readonly string _fullPath;
-        private readonly string FileName;
 
         #region Constructor
 
-        protected MemoryMappedFileBase(string fullPath, MemoryMappedFileAccess access) : this(fullPath, 0, access) { }
+        protected MemoryMappedFileBase(string fullPath) : this(fullPath, 0) { }
 
-        protected MemoryMappedFileBase(string fullPath, long capacity, MemoryMappedFileAccess access)
+        protected MemoryMappedFileBase(string fullPath, long capacity)
         {
-            this.FileName = Path.GetFileName(fullPath);
             this._fullPath = fullPath;
-            string mapName = FileName;
+            string mapName = Path.GetFileName(fullPath);
 
             bool createNewFile = capacity > 0;
             if (createNewFile)
@@ -33,12 +31,36 @@ namespace Framework.Infrastructure.MemoryMap
                 }
 
                 // FileMode一定要使用CreateNew，否则可能出现覆盖文件的情况
-                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.CreateNew, mapName, capacity, access);
+                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.CreateNew, mapName, capacity);
             }
             else
             {
-                this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open, mapName, capacity, access);
+                if (!TryOpenExisting(mapName, out this._mmf))
+                {
+                    this._mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open, mapName, capacity);
+                }
             }
+        }
+
+        private static bool TryOpenExisting(string mapName, out MemoryMappedFile memoryMappedFile)
+        {
+            bool result = false;
+            MemoryMappedFile mmf = null;
+            try
+            {
+                mmf = MemoryMappedFile.OpenExisting(mapName);
+            }
+            catch
+            {
+                mmf = null;
+            }
+            finally
+            {
+                result = mmf != null;
+                memoryMappedFile = mmf;
+            }
+
+            return result;
         }
 
         #endregion
@@ -95,19 +117,20 @@ namespace Framework.Infrastructure.MemoryMap
         #region Property
         public string FullPath
         {
-            get { return _fullPath; }
+            get
+            {
+                ThrowIfDisposed();
+                return _fullPath;
+            }
         }
         #endregion
 
         #region Override
-
         public override string ToString()
         {
             ThrowIfDisposed();
-
             return this._fullPath;
         }
-
         #endregion
 
         #region Private Method
@@ -144,12 +167,6 @@ namespace Framework.Infrastructure.MemoryMap
         }
         #endregion
 
-        protected void MoveData(long position, long destination, long length)
-        {
-            var mover = DataMover.Create(position, destination, length);
-            mover.Move(_mmf);
-        }
-
         protected IEnumerable<T> ReadData<T>(long position, int count)
             where T : struct
         {
@@ -182,6 +199,12 @@ namespace Framework.Infrastructure.MemoryMap
                     accessor.WriteArray<byte>(size * i, buffer, 0, buffer.Length);
                 }
             }
+        }
+
+        protected void MoveData(long position, long destination, long length)
+        {
+            var mover = DataMover.Create(position, destination, length);
+            mover.Move(_mmf);
         }
     }
 }

@@ -45,10 +45,10 @@
     <Compile Include="DataMover\DataMover.cs" />
     <Compile Include="DataMover\LeftDataMover.cs" />
     <Compile Include="DataMover\RightDataMover.cs" />
-    <Compile Include="IMemoryMappedFileModifier.cs" />
-    <Compile Include="IMemoryMappedFileReader.cs" />
-    <Compile Include="IMemoryMappedFile.cs" />
-    <Compile Include="IMemoryMappedFileHeader.cs" />
+    <Compile Include="Interface\IMemoryMappedFileModifier.cs" />
+    <Compile Include="Interface\IMemoryMappedFileReader.cs" />
+    <Compile Include="Interface\IMemoryMappedFile.cs" />
+    <Compile Include="Interface\IMemoryMappedFileHeader.cs" />
     <Compile Include="NonConcurrentFile.cs" />
     <Compile Include="MemoryMappedFileBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

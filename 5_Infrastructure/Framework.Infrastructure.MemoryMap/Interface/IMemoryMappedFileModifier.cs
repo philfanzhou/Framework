@@ -3,7 +3,6 @@
 namespace Framework.Infrastructure.MemoryMap
 {
     public interface IMemoryMappedFileModifier<TDataHeader, TDataItem>
-        : IMemoryMappedFile<TDataHeader>
         where TDataHeader : struct, IMemoryMappedFileHeader
         where TDataItem : struct
     {

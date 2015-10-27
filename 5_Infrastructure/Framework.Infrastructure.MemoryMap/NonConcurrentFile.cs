@@ -8,13 +8,13 @@ namespace Framework.Infrastructure.MemoryMap
 {
     public class NonConcurrentFile<TDataHeader, TDataItem> : 
         MemoryMappedFileBase,
+        IMemoryMappedFile<TDataHeader>,
         IMemoryMappedFileModifier<TDataHeader, TDataItem>,
         IMemoryMappedFileReader<TDataHeader, TDataItem>
         where TDataHeader : struct, IMemoryMappedFileHeader
         where TDataItem : struct
     {
         #region Field
-
         /// <summary>
         /// 头文件长度
         /// </summary>
@@ -23,38 +23,15 @@ namespace Framework.Infrastructure.MemoryMap
         /// 单个数据长度
         /// </summary>
         private readonly int _dataItemSize = Marshal.SizeOf(typeof(TDataItem));
-
-        private TDataHeader _header;
-
         #endregion
 
         #region Constructor
-        
+
         /// <summary>
         /// 打开文件调用的构造函数
         /// </summary>
         /// <param name="path"></param>
-        public NonConcurrentFile(string path) : this(path, MemoryMappedFileAccess.ReadWrite)
-        {
-        }
-
-        protected NonConcurrentFile(string path, MemoryMappedFileAccess access)
-            : base(path, access)
-        {
-            _header = ReadData<TDataHeader>(0, 1).FirstOrDefault();
-        }
-
-        protected NonConcurrentFile(string path, TDataHeader fileHeader, MemoryMappedFileAccess access)
-            : base(path, CaculateCapacity(fileHeader), access)
-        {
-            if (fileHeader.MaxDataCount <= 0)
-                throw new ArgumentOutOfRangeException("fileHeader");
-
-            // 创建文件之后要立即更新头，避免创建之后未加数据就关闭后，下次无法打开文件
-            fileHeader.DataCount = 0;
-            this._header = fileHeader;
-            WriteData(0, new TDataHeader[] { _header });
-        }
+        public NonConcurrentFile(string path) : base(path) { }
 
         /// <summary>
         /// 创建文件调用的构造函数
@@ -62,8 +39,14 @@ namespace Framework.Infrastructure.MemoryMap
         /// <param name="path"></param>
         /// <param name="maxDataCount"></param>
         public NonConcurrentFile(string path, TDataHeader fileHeader)
-            : this(path, fileHeader, MemoryMappedFileAccess.ReadWrite)
+            : base(path, CaculateCapacity(fileHeader))
         {
+            if (fileHeader.MaxDataCount <= 0)
+                throw new ArgumentOutOfRangeException("fileHeader");
+
+            // 创建文件之后要立即更新头，避免创建之后未加数据就关闭后，下次无法打开文件
+            fileHeader.DataCount = 0;
+            WriteData(0, new TDataHeader[] { fileHeader });
         }
         #endregion
 
@@ -71,10 +54,10 @@ namespace Framework.Infrastructure.MemoryMap
 
         public TDataHeader Header
         {
-            get 
+            get
             {
                 ThrowIfDisposed();
-                return _header;
+                return ReadData<TDataHeader>(0, 1).FirstOrDefault();
             }
         }
 
@@ -89,7 +72,7 @@ namespace Framework.Infrastructure.MemoryMap
 
         public virtual void Add(IEnumerable<TDataItem> items)
         {
-            Insert(items, _header.DataCount);
+            Insert(items, Header.DataCount);
         }
 
         public virtual void Delete(int index)
@@ -104,7 +87,7 @@ namespace Framework.Infrastructure.MemoryMap
 
         public virtual void DeleteAll()
         {
-            Delete(0, _header.DataCount);
+            Delete(0, Header.DataCount);
         }
 
         public virtual void Update(TDataItem item, int index)
@@ -129,7 +112,7 @@ namespace Framework.Infrastructure.MemoryMap
 
         public virtual IEnumerable<TDataItem> ReadAll()
         {
-            return Read(0, _header.DataCount);
+            return Read(0, Header.DataCount);
         }
 
         public virtual void Insert(TDataItem item, int index)
@@ -145,15 +128,14 @@ namespace Framework.Infrastructure.MemoryMap
         #endregion
 
         #region Protected Method
-
         protected virtual IEnumerable<TDataItem> DoRead(int index, int count)
         {
             ThrowIfDisposed();
-
-            if (index > _header.DataCount || index < 0)
+            TDataHeader header = this.Header;
+            if (index > header.DataCount || index < 0)
                 throw new ArgumentOutOfRangeException("index");
 
-            if (count < 0 || index + count > this._header.DataCount)
+            if (count < 0 || index + count > header.DataCount)
                 throw new ArgumentOutOfRangeException("count");
 
             if(count == 0)
@@ -172,30 +154,31 @@ namespace Framework.Infrastructure.MemoryMap
             if (null == items)
                 throw new ArgumentNullException("items");
 
-            if (index > _header.MaxDataCount || index < 0)
+            TDataHeader header = this.Header;
+            if (index > header.MaxDataCount || index < 0)
                 throw new ArgumentOutOfRangeException("index");
 
             var array = items.ToArray();
-            if (array.Length + index > _header.MaxDataCount)
+            if (array.Length + index > header.MaxDataCount)
                 throw new ArgumentOutOfRangeException("items");
 
             if (ChangeDataCount)
             {
-                if (array.Length + _header.DataCount > _header.MaxDataCount)
+                if (array.Length + header.DataCount > header.MaxDataCount)
                     throw new ArgumentOutOfRangeException("items");
             }
 
-            if (ChangeDataCount && index < _header.DataCount)
+            if (ChangeDataCount && index < header.DataCount)
             {
                 // 待移动数据所在位置(右移：从当前有效数据的末尾开始移动)
                 long position = 0;
                 position += _headerSize;
-                position += _dataItemSize * _header.DataCount;
+                position += _dataItemSize * header.DataCount;
                 // 数据需要移动到的位置
                 long destination = position;
                 destination += _dataItemSize*array.Length;
                 // 需要移动的byte长度
-                long length = _dataItemSize * (_header.DataCount - index);
+                long length = _dataItemSize * (header.DataCount - index);
 
                 // 移动数据
                 MoveData(position, destination, length);
@@ -208,40 +191,41 @@ namespace Framework.Infrastructure.MemoryMap
             // 更新文件头
             if (ChangeDataCount)
             {
-                if (index > _header.DataCount)
+                if (index > header.DataCount)
                 {
                     // 如果是在当前已有数据之后的位置插入，更新已有数据数量就需要特殊处理
                     // 等于是中间加入了空白数据
-                    int dataCount = index - _header.DataCount + array.Length - 1;
-                    _header.DataCount += dataCount;
-                    WriteData(0, new TDataHeader[] { _header });
+                    int dataCount = index - header.DataCount + array.Length - 1;
+                    header.DataCount += dataCount;
+                    WriteData(0, new TDataHeader[] { header });
                 }
                 else
                 {
-                    _header.DataCount += array.Length;
-                    WriteData(0, new TDataHeader[] { _header });
+                    header.DataCount += array.Length;
+                    WriteData(0, new TDataHeader[] { header });
                 }
             }
         }
-
+        
         protected virtual void DoDelete(int index, int count)
         {
             ThrowIfDisposed();
 
-            if (index >= _header.MaxDataCount || index < 0)
+            TDataHeader header = this.Header;
+            if (index >= header.MaxDataCount || index < 0)
                 throw new ArgumentOutOfRangeException("index");
 
-            if (count > _header.MaxDataCount || count < 1)
+            if (count > header.MaxDataCount || count < 1)
                 throw new ArgumentOutOfRangeException("count");
-            if (index + count > _header.MaxDataCount)
+            if (index + count > header.MaxDataCount)
                 throw new ArgumentOutOfRangeException("count");
 
-            if (index >= _header.DataCount)
+            if (index >= header.DataCount)
             {
                 return;
             }
 
-            if (index + count < _header.DataCount)
+            if (index + count < header.DataCount)
             {
                 // 待移动数据所在位置(左移)
                 long position = 0;
@@ -252,15 +236,15 @@ namespace Framework.Infrastructure.MemoryMap
                 destination += _headerSize;
                 destination += _dataItemSize * index;
                 // 待向前移动byte长度
-                long length = (_header.DataCount - (index + count)) * _dataItemSize;
+                long length = (header.DataCount - (index + count)) * _dataItemSize;
 
                 // 移动数据
                 MoveData(position, destination, length);
             }
 
             // 更新文件头
-            _header.DataCount += -count;
-            WriteData(0, new TDataHeader[] { _header });
+            header.DataCount += -count;
+            WriteData(0, new TDataHeader[] { header });
         }
         #endregion
 
