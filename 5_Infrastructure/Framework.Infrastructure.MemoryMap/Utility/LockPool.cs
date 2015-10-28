@@ -33,24 +33,25 @@ namespace Framework.Infrastructure.MemoryMap
         }
 
         private object _lockObj = new object();
-        private Dictionary<string, ReadWriteLockData> _cache = new Dictionary<string, ReadWriteLockData>();
+        private Dictionary<int, ReadWriteLockData> _cache = new Dictionary<int, ReadWriteLockData>();
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         internal ReaderWriterLockSlim GetLock(string key)
         {
             ReaderWriterLockSlim result = null;
+            int keyValue = key.GetHashCode();
             lock (_lockObj)
             {
-                if(!_cache.ContainsKey(key))
+                if(!_cache.ContainsKey(keyValue))
                 {
                     ReadWriteLockData data = new ReadWriteLockData();
                     data.Count = 0;
                     data.Lock = new ReaderWriterLockSlim();
-                    _cache.Add(key, data);
+                    _cache.Add(keyValue, data);
                 }
 
-                _cache[key].Count++;
-                result = _cache[key].Lock;
+                _cache[keyValue].Count++;
+                result = _cache[keyValue].Lock;
             }
 
             return result;
@@ -59,16 +60,17 @@ namespace Framework.Infrastructure.MemoryMap
         [MethodImpl(MethodImplOptions.Synchronized)]
         internal void ReleaseLock(string key)
         {
+            int keyValue = key.GetHashCode();
             lock (_lockObj)
             {
-                if (_cache.ContainsKey(key))
+                if (_cache.ContainsKey(keyValue))
                 {
-                    _cache[key].Count--;
+                    _cache[keyValue].Count--;
 
-                    if(_cache[key].Count <= 0)
+                    if(_cache[keyValue].Count <= 0)
                     {
-                        ReadWriteLockData data = _cache[key];
-                        _cache.Remove(key);
+                        ReadWriteLockData data = _cache[keyValue];
+                        _cache.Remove(keyValue);
                         data.Lock.Dispose();
                     }
                 }

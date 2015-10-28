@@ -22,11 +22,10 @@ namespace Framework.Infrastructure.MemoryMap
         {
             _fullPath = fullPath;
             _mapName = fullPath.GetHashCode().ToString();
-            this._mmf = NewMethod(fullPath, _mapName, capacity);
+            this._mmf = CreateMMF(fullPath, _mapName, capacity);
         }
-
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        private static MemoryMappedFile NewMethod(string fullPath, string mapName, long capacity)
+        
+        private static MemoryMappedFile CreateMMF(string fullPath, string mapName, long capacity)
         {
             MemoryMappedFile result;
             bool createNewFile = capacity > 0;

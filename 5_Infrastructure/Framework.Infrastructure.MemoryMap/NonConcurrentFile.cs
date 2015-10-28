@@ -6,19 +6,19 @@ using System.Runtime.InteropServices;
 
 namespace Framework.Infrastructure.MemoryMap
 {
-    public class NonConcurrentFile<TDataHeader, TDataItem> : 
+    public class NonConcurrentFile<TFileHeader, TDataItem> : 
         MemoryMappedFileBase,
-        IMemoryMappedFile<TDataHeader>,
-        IMemoryMappedFileModifier<TDataHeader, TDataItem>,
-        IMemoryMappedFileReader<TDataHeader, TDataItem>
-        where TDataHeader : struct, IMemoryMappedFileHeader
+        IMemoryMappedFile<TFileHeader>,
+        IMemoryMappedFileModifier<TFileHeader, TDataItem>,
+        IMemoryMappedFileReader<TFileHeader, TDataItem>
+        where TFileHeader : struct, IMemoryMappedFileHeader
         where TDataItem : struct
     {
         #region Field
         /// <summary>
         /// 头文件长度
         /// </summary>
-        private readonly int _headerSize = Marshal.SizeOf(typeof(TDataHeader));
+        private readonly int _headerSize = Marshal.SizeOf(typeof(TFileHeader));
         /// <summary>
         /// 单个数据长度
         /// </summary>
@@ -37,7 +37,7 @@ namespace Framework.Infrastructure.MemoryMap
         /// </summary>
         /// <param name="path"></param>
         /// <param name="maxDataCount"></param>
-        public NonConcurrentFile(string path, TDataHeader fileHeader)
+        public NonConcurrentFile(string path, TFileHeader fileHeader)
             : base(path, CaculateCapacity(fileHeader))
         {
             if (fileHeader.MaxDataCount <= 0)
@@ -45,17 +45,17 @@ namespace Framework.Infrastructure.MemoryMap
 
             // 创建文件之后要立即更新头，避免创建之后未加数据就关闭后，下次无法打开文件
             fileHeader.DataCount = 0;
-            WriteData(0, new TDataHeader[] { fileHeader });
+            WriteData(0, new TFileHeader[] { fileHeader });
         }
 
-        private static long CaculateCapacity(TDataHeader fileHeader)
+        private static long CaculateCapacity(TFileHeader fileHeader)
         {
-            return fileHeader.MaxDataCount * Marshal.SizeOf(typeof(TDataItem)) + Marshal.SizeOf(typeof(TDataHeader));
+            return fileHeader.MaxDataCount * Marshal.SizeOf(typeof(TDataItem)) + Marshal.SizeOf(typeof(TFileHeader));
         }
         #endregion
 
         #region Property
-        public virtual TDataHeader Header
+        public virtual TFileHeader Header
         {
             get
             {
@@ -131,7 +131,7 @@ namespace Framework.Infrastructure.MemoryMap
         {
             ThrowIfDisposed();
 
-            TDataHeader header = GetHeader();
+            TFileHeader header = GetHeader();
             if (index > header.DataCount || index < 0)
                 throw new ArgumentOutOfRangeException("index");
 
@@ -154,7 +154,7 @@ namespace Framework.Infrastructure.MemoryMap
             if (null == items)
                 throw new ArgumentNullException("items");
 
-            TDataHeader header = GetHeader();
+            TFileHeader header = GetHeader();
             if (index > header.MaxDataCount || index < 0)
                 throw new ArgumentOutOfRangeException("index");
 
@@ -197,12 +197,12 @@ namespace Framework.Infrastructure.MemoryMap
                     // 等于是中间加入了空白数据
                     int dataCount = index - header.DataCount + array.Length - 1;
                     header.DataCount += dataCount;
-                    WriteData(0, new TDataHeader[] { header });
+                    WriteData(0, new TFileHeader[] { header });
                 }
                 else
                 {
                     header.DataCount += array.Length;
-                    WriteData(0, new TDataHeader[] { header });
+                    WriteData(0, new TFileHeader[] { header });
                 }
             }
         }
@@ -211,7 +211,7 @@ namespace Framework.Infrastructure.MemoryMap
         {
             ThrowIfDisposed();
 
-            TDataHeader header = GetHeader();
+            TFileHeader header = GetHeader();
             if (index >= header.MaxDataCount || index < 0)
                 throw new ArgumentOutOfRangeException("index");
 
@@ -244,13 +244,13 @@ namespace Framework.Infrastructure.MemoryMap
 
             // 更新文件头
             header.DataCount += -count;
-            WriteData(0, new TDataHeader[] { header });
+            WriteData(0, new TFileHeader[] { header });
         }
 
-        private TDataHeader GetHeader()
+        private TFileHeader GetHeader()
         {
             ThrowIfDisposed();
-            return ReadData<TDataHeader>(0, 1).FirstOrDefault();
+            return ReadData<TFileHeader>(0, 1).FirstOrDefault();
         }
         #endregion
     }
