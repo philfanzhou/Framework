@@ -67,17 +67,17 @@ namespace Framework.Infrastructure.MemoryMap
         #region IMemoryMappedFile Members
         public virtual void Add(TDataItem item)
         {
-            DoInsert(new[] { item }, GetHeader().DataCount, true);
+            Add(new[] { item });
         }
 
         public virtual void Add(IEnumerable<TDataItem> items)
         {
-            DoInsert(items, GetHeader().DataCount, true);
+            Insert(items, GetHeader().DataCount);
         }
 
         public virtual void Delete(int index)
         {
-            DoDelete(index, 1);
+            Delete(index, 1);
         }
 
         public virtual void Delete(int index, int count)
@@ -87,12 +87,12 @@ namespace Framework.Infrastructure.MemoryMap
 
         public virtual void DeleteAll()
         {
-            DoDelete(0, GetHeader().DataCount);
+            Delete(0, GetHeader().DataCount);
         }
 
         public virtual void Update(TDataItem item, int index)
         {
-            DoInsert(new[] { item }, index, false);
+            Update(new[] { item }, index);
         }
 
         public virtual void Update(IEnumerable<TDataItem> items, int index)
@@ -102,7 +102,7 @@ namespace Framework.Infrastructure.MemoryMap
 
         public virtual TDataItem Read(int index)
         {
-            return DoRead(index, 1).FirstOrDefault();
+            return Read(index, 1).FirstOrDefault();
         }
 
         public virtual IEnumerable<TDataItem> Read(int index, int count)
@@ -112,12 +112,12 @@ namespace Framework.Infrastructure.MemoryMap
 
         public virtual IEnumerable<TDataItem> ReadAll()
         {
-            return DoRead(0, GetHeader().DataCount);
+            return Read(0, GetHeader().DataCount);
         }
 
         public virtual void Insert(TDataItem item, int index)
         {
-            DoInsert(new[] { item }, index, true);
+            Insert(new[] { item }, index);
         }
 
         public virtual void Insert(IEnumerable<TDataItem> items, int index)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Framework.Infrastructure.MemoryMap
@@ -12,9 +11,9 @@ namespace Framework.Infrastructure.MemoryMap
         where TFileHeader : struct, IMemoryMappedFileHeader
         where TDataItem : struct
     {
-        private ReaderWriterLockSlim _rwLock;
-        private NonConcurrentFile<TFileHeader, TDataItem> _mmf = null;
         private string _fullPath;
+        private NonConcurrentFile<TFileHeader, TDataItem> _mmf;
+        private ReaderWriterLockSlim _rwLock;
 
         private static object _lockObj = new object();
 
@@ -28,7 +27,8 @@ namespace Framework.Infrastructure.MemoryMap
             lock (_lockObj)
             {
                 _fullPath = path;
-                _mmf = new NonConcurrentFile<TFileHeader, TDataItem>(path); 
+                _mmf = new NonConcurrentFile<TFileHeader, TDataItem>(path);
+                _rwLock = LockPool.Instance.GetLock(_fullPath);
             }
         }
 
@@ -42,13 +42,13 @@ namespace Framework.Infrastructure.MemoryMap
             lock (_lockObj)
             {
                 _fullPath = path;
-                _mmf = new NonConcurrentFile<TFileHeader, TDataItem>(path, fileHeader); 
+                _mmf = new NonConcurrentFile<TFileHeader, TDataItem>(path, fileHeader);
+                _rwLock = LockPool.Instance.GetLock(_fullPath);
             }
         }
         #endregion
 
         #region IDisposable Member
-
         protected bool Disposed;
 
         ~ConcurrentFile()
@@ -93,20 +93,7 @@ namespace Framework.Infrastructure.MemoryMap
 
             Disposed = true;
         }
-
         #endregion
-
-        private ReaderWriterLockSlim RWLock
-        {
-            get
-            {
-                if(null == _rwLock)
-                {
-                    _rwLock = LockPool.Instance.GetLock(_fullPath);
-                }
-                return _rwLock;
-            }
-        }
 
         #region IMemoryMappedFile Members
         public string FullPath
@@ -121,171 +108,171 @@ namespace Framework.Infrastructure.MemoryMap
         {
             get
             {
-                RWLock.EnterReadLock();
+                _rwLock.EnterReadLock();
                 try
                 {
                     return _mmf.Header;
                 }
                 finally
                 {
-                    RWLock.ExitReadLock();
+                    _rwLock.ExitReadLock();
                 }
             }
         }
 
         public void Add(TDataItem item)
         {
-            RWLock.EnterWriteLock();
+            _rwLock.EnterWriteLock();
             try
             {
                 _mmf.Add(item);
             }
             finally
             {
-                RWLock.ExitWriteLock();
+                _rwLock.ExitWriteLock();
             }
         }
 
         public void Add(IEnumerable<TDataItem> items)
         {
-            RWLock.EnterWriteLock();
+            _rwLock.EnterWriteLock();
             try
             {
                 _mmf.Add(items);
             }
             finally
             {
-                RWLock.ExitWriteLock();
+                _rwLock.ExitWriteLock();
             }
         }
 
         public void Delete(int index)
         {
-            RWLock.EnterWriteLock();
+            _rwLock.EnterWriteLock();
             try
             {
                 _mmf.Delete(index);
             }
             finally
             {
-                RWLock.ExitWriteLock();
+                _rwLock.ExitWriteLock();
             }
         }
 
         public void Delete(int index, int count)
         {
-            RWLock.EnterWriteLock();
+            _rwLock.EnterWriteLock();
             try
             {
                 _mmf.Delete(index, count);
             }
             finally
             {
-                RWLock.ExitWriteLock();
+                _rwLock.ExitWriteLock();
             }
         }
 
         public void DeleteAll()
         {
-            RWLock.EnterWriteLock();
+            _rwLock.EnterWriteLock();
             try
             {
                 _mmf.DeleteAll();
             }
             finally
             {
-                RWLock.ExitWriteLock();
+                _rwLock.ExitWriteLock();
             }
         }
 
         public void Update(IEnumerable<TDataItem> items, int index)
         {
-            RWLock.EnterWriteLock();
+            _rwLock.EnterWriteLock();
             try
             {
                 _mmf.Update(items, index);
             }
             finally
             {
-                RWLock.ExitWriteLock();
+                _rwLock.ExitWriteLock();
             }
         }
 
         public void Update(TDataItem item, int index)
         {
-            RWLock.EnterWriteLock();
+            _rwLock.EnterWriteLock();
             try
             {
                 _mmf.Update(item, index);
             }
             finally
             {
-                RWLock.ExitWriteLock();
+                _rwLock.ExitWriteLock();
             }
         }
 
         public void Insert(IEnumerable<TDataItem> items, int index)
         {
-            RWLock.EnterWriteLock();
+            _rwLock.EnterWriteLock();
             try
             {
                 _mmf.Insert(items, index);
             }
             finally
             {
-                RWLock.ExitWriteLock();
+                _rwLock.ExitWriteLock();
             }
         }
 
         public void Insert(TDataItem item, int index)
         {
-            RWLock.EnterWriteLock();
+            _rwLock.EnterWriteLock();
             try
             {
                 _mmf.Insert(item, index);
             }
             finally
             {
-                RWLock.ExitWriteLock();
+                _rwLock.ExitWriteLock();
             }
         }
 
         public TDataItem Read(int index)
         {
-            RWLock.EnterReadLock();
+            _rwLock.EnterReadLock();
             try
             {
                 return _mmf.Read(index);
             }
             finally
             {
-                RWLock.ExitReadLock();
+                _rwLock.ExitReadLock();
             }
         }
 
         public IEnumerable<TDataItem> Read(int index, int count)
         {
-            RWLock.EnterReadLock();
+            _rwLock.EnterReadLock();
             try
             {
                 return _mmf.Read(index, count);
             }
             finally
             {
-                RWLock.ExitReadLock();
+                _rwLock.ExitReadLock();
             }
         }
 
         public IEnumerable<TDataItem> ReadAll()
         {
-            RWLock.EnterReadLock();
+            _rwLock.EnterReadLock();
             try
             {
                 return _mmf.ReadAll();
             }
             finally
             {
-                RWLock.ExitReadLock();
+                _rwLock.ExitReadLock();
             }
         }
         #endregion

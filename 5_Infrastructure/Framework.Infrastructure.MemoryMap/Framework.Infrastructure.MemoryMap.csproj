@@ -49,6 +49,7 @@
     <Compile Include="Interface\IMemoryMappedFileReader.cs" />
     <Compile Include="Interface\IMemoryMappedFile.cs" />
     <Compile Include="Interface\IMemoryMappedFileHeader.cs" />
+    <Compile Include="Utility\MemoryMappedFileExt.cs" />
     <Compile Include="Utility\LockPool.cs" />
     <Compile Include="NonConcurrentFile.cs" />
     <Compile Include="MemoryMappedFileBase.cs" />

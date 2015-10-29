@@ -64,6 +64,7 @@
     <Compile Include="ConcurrentTest.cs" />
     <Compile Include="Performance.cs" />
     <Compile Include="BaiscTest\UpdateTest.cs" />
+    <Compile Include="SingletonTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.MemoryMap\Framework.Infrastructure.MemoryMap.csproj">
