@@ -28,7 +28,7 @@ namespace Framework.Infrastructure.MemoryMap
             {
                 _fullPath = path;
                 _mmf = new NonConcurrentFile<TFileHeader, TDataItem>(path);
-                _rwLock = LockPool.Instance.GetLock(_fullPath);
+                _rwLock = ReaderWriterLockPool.Instance.Get(_fullPath);
             }
         }
 
@@ -43,7 +43,7 @@ namespace Framework.Infrastructure.MemoryMap
             {
                 _fullPath = path;
                 _mmf = new NonConcurrentFile<TFileHeader, TDataItem>(path, fileHeader);
-                _rwLock = LockPool.Instance.GetLock(_fullPath);
+                _rwLock = ReaderWriterLockPool.Instance.Get(_fullPath);
             }
         }
         #endregion
@@ -88,7 +88,7 @@ namespace Framework.Infrastructure.MemoryMap
                 {
                     _rwLock = null;
                 }
-                LockPool.Instance.ReleaseLock(_fullPath);
+                ReaderWriterLockPool.Instance.Release(_fullPath);
             }
 
             Disposed = true;
