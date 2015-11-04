@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2_DistributedService", "2_D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.DistributedService", "2_DistributedService\Framework.DistributedService\Framework.DistributedService.csproj", "{A40855F6-CEDA-4464-976D-4BD9536365CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.RESTful", "5_Infrastructure\Framework.Infrastructure.RESTful\Framework.Infrastructure.RESTful.csproj", "{6BCF4213-9883-40D9-909A-C539EB26EE77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{A40855F6-CEDA-4464-976D-4BD9536365CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A40855F6-CEDA-4464-976D-4BD9536365CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A40855F6-CEDA-4464-976D-4BD9536365CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BCF4213-9883-40D9-909A-C539EB26EE77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BCF4213-9883-40D9-909A-C539EB26EE77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BCF4213-9883-40D9-909A-C539EB26EE77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BCF4213-9883-40D9-909A-C539EB26EE77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,5 +125,6 @@ Global
 		{6C87E5CF-6340-4786-A99A-12154401AC3B} = {D61CC2E7-DA52-4642-B2DE-C0324C933A65}
 		{7600299E-7599-4087-BE60-380D5296D54A} = {994BA298-1147-44D3-A2BA-3A5C297914AD}
 		{A40855F6-CEDA-4464-976D-4BD9536365CE} = {FF20AD0E-7FD4-4785-8FC5-2686E1598940}
+		{6BCF4213-9883-40D9-909A-C539EB26EE77} = {994BA298-1147-44D3-A2BA-3A5C297914AD}
 	EndGlobalSection
 EndGlobal
