@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DistributedHostBase.cs" />
     <Compile Include="DistributedHostManagerBase.cs" />
     <Compile Include="IDistributedHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

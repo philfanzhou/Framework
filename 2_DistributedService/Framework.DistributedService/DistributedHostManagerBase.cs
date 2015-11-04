@@ -8,7 +8,7 @@ namespace Framework.DistributedService
 {
     public abstract class DistributedHostManagerBase
     {
-        private List<DistributedHostBase> _hostList = new List<DistributedHostBase>();
+        private List<IDistributedHost> _hostList = new List<IDistributedHost>();
         private readonly Timer _serviceStatusReportTimer = new Timer(1000);
 
         protected DistributedHostManagerBase()
@@ -38,7 +38,7 @@ namespace Framework.DistributedService
         public abstract void Initialize();
 
         #region Protected Method
-        protected void AddHost(DistributedHostBase host)
+        protected void AddHost(IDistributedHost host)
         {
             _hostList.Add(host);
         }
