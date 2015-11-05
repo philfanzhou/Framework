@@ -70,7 +70,7 @@ namespace Framework.DistributedService
                 HostStatusReportEventArgsItem item = new HostStatusReportEventArgsItem
                 {
                     Time = DateTime.Now,
-                    HostName = host.Name,
+                    HostName = host.ServiceName,
                     HostStatus = host.State.ToString()
                 };
                 items.Add(item);

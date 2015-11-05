@@ -5,6 +5,8 @@ namespace Framework.DistributedService
 {
     public interface IDistributedHost : ICommunicationObject, IDisposable
     {
-        string Name { get; }
+        string ServerAddress { get; }
+
+        string ServiceName { get; }
     }
 }
