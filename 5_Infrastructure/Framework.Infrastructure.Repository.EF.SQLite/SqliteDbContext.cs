@@ -22,13 +22,25 @@ namespace Framework.Infrastructure.Repository.EF.SQLite
     {
         public SQLiteDbConfiguration()
         {
-            //SetProviderFactory("System.Data.SQLite", SQLiteFactory.Instance);
+            /*
+      <remove invariant="System.Data.SQLite.EF6" />
+      <add name="SQLite Data Provider (Entity Framework 6)" 
+            invariant="System.Data.SQLite.EF6" 
+            type="System.Data.SQLite.EF6.SQLiteProviderFactory, System.Data.SQLite.EF6" />
+      
+      <remove invariant="System.Data.SQLite" />
+      <add name="SQLite Data Provider" 
+            invariant="System.Data.SQLite" 
+            description=".NET Framework Data Provider for SQLite" 
+            type="System.Data.SQLite.SQLiteFactory, System.Data.SQLite" />
+            */
+
             SetProviderFactory("System.Data.SQLite.EF6", SQLiteProviderFactory.Instance);
 
             Type t = Type.GetType(
                        "System.Data.SQLite.EF6.SQLiteProviderServices, System.Data.SQLite.EF6");
             FieldInfo fi = t.GetField("Instance", BindingFlags.NonPublic | BindingFlags.Static);
-            SetProviderServices("System.Data.SQLite", (DbProviderServices)fi.GetValue(null));
+            SetProviderServices("SQLite Data Provider (Entity Framework 6)", (DbProviderServices)fi.GetValue(null));
         }
     }
 }
