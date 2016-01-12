@@ -20,6 +20,20 @@ namespace Test.Infrastructure.Repository.EF.Config
             }
         }
 
+        public static void InitializeSqlCe(bool clearDatabase)
+        {
+            ContainerHelper.Instance
+                .RegisterType<IRepositoryContext,
+                EntityFrameworkRepositoryContext<TestSqlCeDbContext>>();
+
+            if (clearDatabase)
+            {
+                TestSqlCeDbContext dbContext = new TestSqlCeDbContext();
+                dbContext.Database.Delete();
+                dbContext.Database.Create();
+            }
+        }
+
         public static void InitializeSqlite(bool clearDatabase)
         {
             ContainerHelper.Instance

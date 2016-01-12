@@ -56,6 +56,7 @@
     <Compile Include="SqlServerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PersonDataService.cs" />
+    <Compile Include="SqlCeTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Container\Framework.Infrastructure.Container.csproj">

@@ -56,6 +56,7 @@
     <Compile Include="DbConfig\PersonConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DbContext\TestSQLiteDbContext.cs" />
+    <Compile Include="DbContext\TestSqlCeDbContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -68,6 +69,10 @@
     <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository.EF.MySql\Framework.Infrastructure.Repository.EF.MySql.csproj">
       <Project>{a03fe3dc-0f2a-4c1d-9b8d-56c971be78ef}</Project>
       <Name>Framework.Infrastructure.Repository.EF.MySql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository.EF.SQLCE\Framework.Infrastructure.Repository.EF.SQLCE.csproj">
+      <Project>{4b62ffa8-520b-46b0-9006-f33d943ee0a6}</Project>
+      <Name>Framework.Infrastructure.Repository.EF.SQLCE</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository.EF.SQLite\Framework.Infrastructure.Repository.EF.SQLite.csproj">
       <Project>{fafc5bb1-85f0-4e93-9744-9ed3bce2423c}</Project>
