@@ -1,5 +1,4 @@
 ﻿using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Data.Entity.SqlServerCompact;
 
 namespace Framework.Infrastructure.Repository.EF.SQLServer
@@ -8,7 +7,7 @@ namespace Framework.Infrastructure.Repository.EF.SQLServer
     public class SqlCeDbContext : DbContext
     {
         public SqlCeDbContext(string fileName)
-            : base(new SqlCeConnectionFactory(SqlCeProviderServices.ProviderInvariantName).CreateConnection(fileName), true)
+            : base(fileName)
         {
             
         }

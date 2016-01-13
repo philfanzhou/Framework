@@ -6,7 +6,7 @@ using Test.Infrastructure.Repository.EF.Metadata;
 namespace Test.Infrastructure.Repository.EF
 {
     [TestClass]
-    public class SqlCeTest
+    public class SqlServerCeTest
     {
 
         [TestInitialize()]
