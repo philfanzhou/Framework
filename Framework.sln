@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.DistributedServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.RESTful", "5_Infrastructure\Framework.Infrastructure.RESTful\Framework.Infrastructure.RESTful.csproj", "{6BCF4213-9883-40D9-909A-C539EB26EE77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.Repository.EF.SQLCE", "5_Infrastructure\Framework.Infrastructure.Repository.EF.SQLCE\Framework.Infrastructure.Repository.EF.SQLCE.csproj", "{4B62FFA8-520B-46B0-9006-F33D943EE0A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.Repository.EF.SqlServerCe", "5_Infrastructure\Framework.Infrastructure.Repository.EF.SqlServerCe\Framework.Infrastructure.Repository.EF.SqlServerCe.csproj", "{8F0F9E32-F16B-4972-8EDE-D8F273BE9923}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,10 +93,10 @@ Global
 		{6BCF4213-9883-40D9-909A-C539EB26EE77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BCF4213-9883-40D9-909A-C539EB26EE77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BCF4213-9883-40D9-909A-C539EB26EE77}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4B62FFA8-520B-46B0-9006-F33D943EE0A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4B62FFA8-520B-46B0-9006-F33D943EE0A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4B62FFA8-520B-46B0-9006-F33D943EE0A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4B62FFA8-520B-46B0-9006-F33D943EE0A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F0F9E32-F16B-4972-8EDE-D8F273BE9923}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F0F9E32-F16B-4972-8EDE-D8F273BE9923}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F0F9E32-F16B-4972-8EDE-D8F273BE9923}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F0F9E32-F16B-4972-8EDE-D8F273BE9923}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +116,6 @@ Global
 		{7600299E-7599-4087-BE60-380D5296D54A} = {994BA298-1147-44D3-A2BA-3A5C297914AD}
 		{A40855F6-CEDA-4464-976D-4BD9536365CE} = {FF20AD0E-7FD4-4785-8FC5-2686E1598940}
 		{6BCF4213-9883-40D9-909A-C539EB26EE77} = {994BA298-1147-44D3-A2BA-3A5C297914AD}
-		{4B62FFA8-520B-46B0-9006-F33D943EE0A6} = {7600299E-7599-4087-BE60-380D5296D54A}
+		{8F0F9E32-F16B-4972-8EDE-D8F273BE9923} = {7600299E-7599-4087-BE60-380D5296D54A}
 	EndGlobalSection
 EndGlobal

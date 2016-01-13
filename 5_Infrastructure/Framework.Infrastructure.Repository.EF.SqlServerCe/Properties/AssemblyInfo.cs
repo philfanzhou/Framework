@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Framework.Infrastructure.Repository.EF.SQLCE")]
+[assembly: AssemblyTitle("Framework.Infrastructure.Repository.EF.SqlServerCe")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Framework.Infrastructure.Repository.EF.SQLCE")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCompany("Motorola")]
+[assembly: AssemblyProduct("Framework.Infrastructure.Repository.EF.SqlServerCe")]
+[assembly: AssemblyCopyright("Copyright © Motorola 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4b62ffa8-520b-46b0-9006-f33d943ee0a6")]
+[assembly: Guid("8f0f9e32-f16b-4972-8ede-d8f273be9923")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -1,7 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.SqlServerCompact;
 
-namespace Framework.Infrastructure.Repository.EF.SQLServer
+namespace Framework.Infrastructure.Repository.EF.SqlServerCe
 {
     [DbConfigurationType(typeof(SqlCeConfiguration))] 
     public class SqlCeDbContext : DbContext
