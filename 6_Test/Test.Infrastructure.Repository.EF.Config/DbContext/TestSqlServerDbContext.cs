@@ -1,10 +1,5 @@
-﻿using Framework.Infrastructure.Repository.EF.SQLServer;
-using System;
-using System.Collections.Generic;
+﻿using Framework.Infrastructure.Repository.EF.SqlServer;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Test.Infrastructure.Repository.EF.Config
 {

@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.Repository", "5_Infrastructure\Framework.Infrastructure.Repository\Framework.Infrastructure.Repository.csproj", "{EC6C563D-04AC-4EB0-B570-4C458746F230}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.Repository.EF.SQLServer", "5_Infrastructure\Framework.Infrastructure.Repository.EF.SQLServer\Framework.Infrastructure.Repository.EF.SQLServer.csproj", "{3A849B17-5054-454B-9405-5422B45B714D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.Repository.EF", "5_Infrastructure\Framework.Infrastructure.Repository.EF\Framework.Infrastructure.Repository.EF.csproj", "{56A6CF15-CBCD-416E-9783-40CA8C875175}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Infrastructure.Repository.EF", "6_Test\Test.Infrastructure.Repository.EF\Test.Infrastructure.Repository.EF.csproj", "{1EE58D8C-6C0E-4E22-BDAF-1056046A38ED}"
@@ -39,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.RE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.Repository.EF.SqlServerCe", "5_Infrastructure\Framework.Infrastructure.Repository.EF.SqlServerCe\Framework.Infrastructure.Repository.EF.SqlServerCe.csproj", "{8F0F9E32-F16B-4972-8EDE-D8F273BE9923}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Infrastructure.Repository.EF.SqlServer", "5_Infrastructure\Framework.Infrastructure.Repository.EF.SqlServer\Framework.Infrastructure.Repository.EF.SqlServer.csproj", "{AF19D130-823D-4296-8394-9F7CDAEDBE9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,10 +53,6 @@ Global
 		{EC6C563D-04AC-4EB0-B570-4C458746F230}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC6C563D-04AC-4EB0-B570-4C458746F230}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC6C563D-04AC-4EB0-B570-4C458746F230}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A849B17-5054-454B-9405-5422B45B714D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A849B17-5054-454B-9405-5422B45B714D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A849B17-5054-454B-9405-5422B45B714D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A849B17-5054-454B-9405-5422B45B714D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{56A6CF15-CBCD-416E-9783-40CA8C875175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{56A6CF15-CBCD-416E-9783-40CA8C875175}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56A6CF15-CBCD-416E-9783-40CA8C875175}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -97,6 +93,10 @@ Global
 		{8F0F9E32-F16B-4972-8EDE-D8F273BE9923}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F0F9E32-F16B-4972-8EDE-D8F273BE9923}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F0F9E32-F16B-4972-8EDE-D8F273BE9923}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF19D130-823D-4296-8394-9F7CDAEDBE9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF19D130-823D-4296-8394-9F7CDAEDBE9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF19D130-823D-4296-8394-9F7CDAEDBE9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF19D130-823D-4296-8394-9F7CDAEDBE9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,7 +104,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{F3290E90-FF3B-41E3-9369-2DD497A6054B} = {994BA298-1147-44D3-A2BA-3A5C297914AD}
 		{EC6C563D-04AC-4EB0-B570-4C458746F230} = {7600299E-7599-4087-BE60-380D5296D54A}
-		{3A849B17-5054-454B-9405-5422B45B714D} = {7600299E-7599-4087-BE60-380D5296D54A}
 		{56A6CF15-CBCD-416E-9783-40CA8C875175} = {7600299E-7599-4087-BE60-380D5296D54A}
 		{1EE58D8C-6C0E-4E22-BDAF-1056046A38ED} = {966B2C24-8259-4E1A-A2DE-45BDF99CA59B}
 		{A03FE3DC-0F2A-4C1D-9B8D-56C971BE78EF} = {7600299E-7599-4087-BE60-380D5296D54A}
@@ -117,5 +116,6 @@ Global
 		{A40855F6-CEDA-4464-976D-4BD9536365CE} = {FF20AD0E-7FD4-4785-8FC5-2686E1598940}
 		{6BCF4213-9883-40D9-909A-C539EB26EE77} = {994BA298-1147-44D3-A2BA-3A5C297914AD}
 		{8F0F9E32-F16B-4972-8EDE-D8F273BE9923} = {7600299E-7599-4087-BE60-380D5296D54A}
+		{AF19D130-823D-4296-8394-9F7CDAEDBE9D} = {7600299E-7599-4087-BE60-380D5296D54A}
 	EndGlobalSection
 EndGlobal
