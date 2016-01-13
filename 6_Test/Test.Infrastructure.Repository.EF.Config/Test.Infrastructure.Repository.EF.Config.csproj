@@ -55,7 +55,6 @@
     <Compile Include="DbContext\TestSqlServerDbContext.cs" />
     <Compile Include="DbConfig\PersonConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DbContext\TestSQLiteDbContext.cs" />
     <Compile Include="DbContext\TestSqlCeDbContext.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -73,10 +72,6 @@
     <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository.EF.SQLCE\Framework.Infrastructure.Repository.EF.SQLCE.csproj">
       <Project>{4b62ffa8-520b-46b0-9006-f33d943ee0a6}</Project>
       <Name>Framework.Infrastructure.Repository.EF.SQLCE</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository.EF.SQLite\Framework.Infrastructure.Repository.EF.SQLite.csproj">
-      <Project>{fafc5bb1-85f0-4e93-9744-9ed3bce2423c}</Project>
-      <Name>Framework.Infrastructure.Repository.EF.SQLite</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\5_Infrastructure\Framework.Infrastructure.Repository.EF.SQLServer\Framework.Infrastructure.Repository.EF.SQLServer.csproj">
       <Project>{3a849b17-5054-454b-9405-5422b45b714d}</Project>
