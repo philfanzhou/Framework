@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class Repository<TEntity>
         : IRepository<TEntity>
@@ -70,7 +71,10 @@
 
         public virtual IEnumerable<TEntity> GetAll()
         {
-            return this._context.GetAll<TEntity>();
+            /*Get all 的时候进行了特殊处理，如果这里不进行ToList完成查询
+            * 待遍历时再进行查询的话，Context存在被释放的可能。
+            */
+            return this._context.GetAll<TEntity>().ToList();
         }
 
         public virtual IEnumerable<TEntity> GetAll(ISpecification<TEntity> specification)

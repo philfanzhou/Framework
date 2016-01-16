@@ -22,6 +22,15 @@ namespace Test.Infrastructure.Repository.EF
             }
         }
 
+        public static IEnumerable<Person> GetAll()
+        {
+            using (IRepositoryContext context = ContainerHelper.Resolve<IRepositoryContext>())
+            {
+                var repository = new Repository<Person>(context);
+                return repository.GetAll();
+            }
+        }
+
         public static Person GetPerson(int id)
         {
             using (IRepositoryContext context = ContainerHelper.Resolve<IRepositoryContext>())

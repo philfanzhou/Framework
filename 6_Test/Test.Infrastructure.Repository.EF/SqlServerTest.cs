@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Test.Infrastructure.Repository.EF.Config;
 using Test.Infrastructure.Repository.EF.Metadata;
+using System.Linq;
 
 namespace Test.Infrastructure.Repository.EF
 {
@@ -61,19 +62,7 @@ namespace Test.Infrastructure.Repository.EF
         [TestMethod]
         public void TestSqlServerReadAndWrite()
         {
-            Person expected = new Person
-            {
-                Id = 1,
-                FirstName = "Hi",
-                LastName = "Hello"
-            };
-
-            PersonDataService.Add(expected);
-            var actual = PersonDataService.GetPerson(expected.Id);
-
-            Assert.AreEqual(expected.Id, actual.Id);
-            Assert.AreEqual(expected.FirstName, actual.FirstName);
-            Assert.AreEqual(expected.LastName, actual.LastName);
+            TestMethod.TestReadAndWrite();
         }
     }
 }
