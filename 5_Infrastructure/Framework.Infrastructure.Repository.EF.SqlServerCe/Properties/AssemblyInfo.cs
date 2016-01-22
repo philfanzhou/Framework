@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Framework.Infrastructure.Repository.EF.SqlServerCe")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Motorola")]
+[assembly: AssemblyCompany("Quantum")]
 [assembly: AssemblyProduct("Framework.Infrastructure.Repository.EF.SqlServerCe")]
-[assembly: AssemblyCopyright("Copyright © Motorola 2016")]
+[assembly: AssemblyCopyright("Copyright © Quantum 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

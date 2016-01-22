@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Framework.Infrastructure.RESTful")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Motorola")]
+[assembly: AssemblyCompany("Quantum")]
 [assembly: AssemblyProduct("Framework.Infrastructure.RESTful")]
-[assembly: AssemblyCopyright("Copyright © Motorola 2015")]
+[assembly: AssemblyCopyright("Copyright © Quantum 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

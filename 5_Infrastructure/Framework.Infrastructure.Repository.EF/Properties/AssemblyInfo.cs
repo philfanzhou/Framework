@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Framework.Infrastructure.Repository.EF")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Motorola")]
+[assembly: AssemblyCompany("Quantum")]
 [assembly: AssemblyProduct("Framework.Infrastructure.Repository.EF")]
-[assembly: AssemblyCopyright("Copyright © Motorola 2015")]
+[assembly: AssemblyCopyright("Copyright © Quantum 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

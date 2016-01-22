@@ -62,6 +62,13 @@
     <Compile Include="Specifications\Specification.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>IF NOT $(ConfigurationName) == Release GOTO end
+xcopy $(TargetDir)*.* $(SolutionDir)Publish.Dll\$(ProjectName)\ /y
+del $(SolutionDir)Publish.Dll\$(ProjectName)\*.pdb /f /s /q /a
+del $(SolutionDir)Publish.Dll\$(ProjectName)\*.tmp /f /s /q /a
+:end</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
