@@ -15,6 +15,8 @@ namespace Framework.Infrastructure.Repository
 
         void Add(TEntity entity);
 
+        void AddRange(IEnumerable<TEntity> entities);
+
         void Update(TEntity entity);
 
         void Delete(TEntity entity);

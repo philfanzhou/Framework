@@ -39,6 +39,25 @@
             }
         }
 
+        void IUnitOfWork.RegisterNew<TEntity>(IEnumerable<TEntity> items)
+        {
+            ThrowIfDisposed();
+
+            if (null == items)
+            {
+                throw new RepositoryException("Cannot add null entity");
+            }
+
+            try
+            {
+                this.DoRegisterNew(items);
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryException(ex.Message, ex);
+            }
+        }
+
         void IUnitOfWork.RegisterModified<TEntity>(TEntity item)
         {
             ThrowIfDisposed();
@@ -211,6 +230,9 @@
         #region Abstract Methods
 
         protected abstract void DoRegisterNew<TEntity>(TEntity item)
+            where TEntity : class;
+
+        protected abstract void DoRegisterNew<TEntity>(IEnumerable<TEntity> items)
             where TEntity : class;
 
         protected abstract void DoRegisterModified<TEntity>(TEntity item)

@@ -1,4 +1,6 @@
-﻿namespace Framework.Infrastructure.Repository
+﻿using System.Collections.Generic;
+
+namespace Framework.Infrastructure.Repository
 {
     /// <summary>
     /// Contract for ‘UnitOfWork pattern’. For more
@@ -8,6 +10,9 @@
     public interface IUnitOfWork
     {
         void RegisterNew<TEntity>(TEntity item)
+            where TEntity : class;
+
+        void RegisterNew<TEntity>(IEnumerable<TEntity> items)
             where TEntity : class;
 
         void RegisterModified<TEntity>(TEntity item)

@@ -44,6 +44,11 @@
             (this._context as IUnitOfWork).RegisterNew(entity);
         }
 
+        public virtual void AddRange(IEnumerable<TEntity> entities)
+        {
+            (this._context as IUnitOfWork).RegisterNew(entities);
+        }
+
         public virtual void Update(TEntity entity)
         {
             (this._context as IUnitOfWork).RegisterModified(entity);

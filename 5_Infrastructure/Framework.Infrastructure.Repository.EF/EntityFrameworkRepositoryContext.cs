@@ -29,6 +29,11 @@ namespace Framework.Infrastructure.Repository.EF
             _threadLocalDbContext.Value.Set<TEntity>().Add(item);
         }
 
+        protected override void DoRegisterNew<TEntity>(IEnumerable<TEntity> items)
+        {
+            _threadLocalDbContext.Value.Set<TEntity>().AddRange(items);
+        }
+
         protected override void DoRegisterModified<TEntity>(TEntity item)
         {
             _threadLocalDbContext.Value.Entry(item).State = EntityState.Modified;

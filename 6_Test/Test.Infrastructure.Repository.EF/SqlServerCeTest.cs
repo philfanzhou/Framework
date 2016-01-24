@@ -21,5 +21,11 @@ namespace Test.Infrastructure.Repository.EF
         {
             TestMethod.TestReadAndWrite();
         }
+
+        [TestMethod]
+        public void TestSqlCeAddRange()
+        {
+            TestMethod.TestAddRange();
+        }
     }
 }

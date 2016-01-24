@@ -22,6 +22,17 @@ namespace Test.Infrastructure.Repository.EF
             }
         }
 
+        public static void AddRange(IEnumerable<Person> persons)
+        {
+            using (IRepositoryContext context = ContainerHelper.Resolve<IRepositoryContext>())
+            {
+                var repository = new Repository<Person>(context);
+                repository.AddRange(persons);
+
+                repository.UnitOfWork.Commit();
+            }
+        }
+
         public static IEnumerable<Person> GetAll()
         {
             using (IRepositoryContext context = ContainerHelper.Resolve<IRepositoryContext>())
