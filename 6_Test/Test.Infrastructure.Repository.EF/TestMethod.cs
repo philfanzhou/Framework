@@ -62,7 +62,7 @@ namespace Test.Infrastructure.Repository.EF
         public static void PerformanceTest()
         {
             // 构造测试数据
-            int dataCount = 10;
+            int dataCount = 20000;
             List<Person> dataSource = new List<Person>();
 
             Random random = new Random();
@@ -88,7 +88,7 @@ namespace Test.Infrastructure.Repository.EF
 
             watch.Stop();
 
-            Debug.Print(watch.Elapsed.ToString());
+            Debug.Print("Time:" + watch.Elapsed.ToString());
 
             Assert.AreEqual(dataSource.Count, result.Count);
         }

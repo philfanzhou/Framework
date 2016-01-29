@@ -26,11 +26,15 @@ namespace Framework.Infrastructure.Repository.EF
 
         protected override void DoRegisterNew<TEntity>(TEntity item)
         {
+            _threadLocalDbContext.Value.Configuration.AutoDetectChangesEnabled = false;
+            _threadLocalDbContext.Value.Configuration.ValidateOnSaveEnabled = false;
             _threadLocalDbContext.Value.Set<TEntity>().Add(item);
         }
 
         protected override void DoRegisterNew<TEntity>(IEnumerable<TEntity> items)
         {
+            _threadLocalDbContext.Value.Configuration.AutoDetectChangesEnabled = false;
+            _threadLocalDbContext.Value.Configuration.ValidateOnSaveEnabled = false;
             _threadLocalDbContext.Value.Set<TEntity>().AddRange(items);
         }
 
