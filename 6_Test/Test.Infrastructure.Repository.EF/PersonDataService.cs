@@ -1,10 +1,6 @@
 ﻿using Framework.Infrastructure.Container;
 using Framework.Infrastructure.Repository;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Test.Infrastructure.Repository.EF.Metadata;
 
 namespace Test.Infrastructure.Repository.EF

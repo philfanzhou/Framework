@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Test.Infrastructure.Repository.EF.Metadata;
 
@@ -55,6 +57,40 @@ namespace Test.Infrastructure.Repository.EF
             var actual = result.ToList()[1];
 
             Assert.AreEqual(2, actual.Id);
+        }
+
+        public static void PerformanceTest()
+        {
+            // 构造测试数据
+            int dataCount = 10;
+            List<Person> dataSource = new List<Person>();
+
+            Random random = new Random();
+            for(int i = 0; i < dataCount; i++)
+            {
+                dataSource.Add(new Person
+                {
+                    Address = "测试地址测试地址",
+                    Salary = random.Next(),
+                    Id = random.Next(),
+                    FirstName = "Hi2",
+                    LastName = "Hello2",
+                    Age = random.Next(),
+                    Birthday = DateTime.Now.Date.AddSeconds(i)
+                });
+            }
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            PersonDataService.AddRange(dataSource);
+            var result = PersonDataService.GetAll().ToList();
+
+            watch.Stop();
+
+            Debug.Print(watch.Elapsed.ToString());
+
+            Assert.AreEqual(dataSource.Count, result.Count);
         }
     }
 }

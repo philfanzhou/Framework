@@ -1,8 +1,5 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Test.Infrastructure.Repository.EF.Config;
-using Test.Infrastructure.Repository.EF.Metadata;
-using System.Linq;
 
 namespace Test.Infrastructure.Repository.EF
 {
@@ -26,6 +23,12 @@ namespace Test.Infrastructure.Repository.EF
         public void TestSqlCeAddRange()
         {
             TestMethod.TestAddRange();
+        }
+
+        [TestMethod]
+        public void TestSqlCePerformance()
+        {
+            TestMethod.PerformanceTest();
         }
     }
 }
