@@ -9,7 +9,7 @@ namespace Framework.Infrastructure.Log
 {
     public class LogHelper
     {
-        private string logFolder = Environment.CurrentDirectory + @"\Log\log\";
+        private string logFolder = Environment.CurrentDirectory + @"\Log\";
         private string logFile = "";
         public string LogFile
         {
