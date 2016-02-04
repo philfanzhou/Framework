@@ -16,6 +16,12 @@ namespace Framework.Infrastructure.Log
             get { return logFile; }
         }
 
+        private static LogHelper instance = new LogHelper();
+        public static LogHelper Logger
+        {
+            get { return instance; }
+        }
+
         /// <summary>
         /// 不带参数的构造函数
         /// </summary>
