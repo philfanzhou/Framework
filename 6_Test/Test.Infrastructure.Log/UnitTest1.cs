@@ -28,10 +28,14 @@ namespace Test.Infrastructure.Log
         public void TestMethod1()
         {
             CleanupLogFolder(LogHelper.Logger.LogFolder);
-            LogHelper.Logger.Write("通过单例访问写入日志");            
+            LogHelper.Logger.Write("通过单例访问写入日志");
+            LogHelper.Logger.Write("通过单例访问写入日志");
+            LogHelper.Logger.WriteLine("通过单例访问写入一行日志");
             LogHelper.Logger.WriteLine("通过单例访问写入一行日志");
             
             LogHelper.Logger.Write("通过单例访问写入日志", "ExampleType1");
+            LogHelper.Logger.Write("通过单例访问写入日志", "ExampleType1");
+            LogHelper.Logger.WriteLine("通过单例访问写入一行日志", "ExampleType2");            
             LogHelper.Logger.WriteLine("通过单例访问写入一行日志", "ExampleType2");
 
             string logFile1 = Environment.CurrentDirectory + @"\Log\Type1\LogTest1.txt";
@@ -43,9 +47,13 @@ namespace Test.Infrastructure.Log
             LogHelper logger = new LogHelper("SubLgoExample");
 
             logger.Write("通过单例访问写入日志");
+            logger.Write("通过单例访问写入日志");
+            logger.WriteLine("通过单例访问写入一行日志");
             logger.WriteLine("通过单例访问写入一行日志");
 
             logger.Write("通过单例访问写入日志", "ExampleType3");
+            logger.Write("通过单例访问写入日志", "ExampleType3");
+            logger.WriteLine("通过单例访问写入一行日志", "ExampleType4");
             logger.WriteLine("通过单例访问写入一行日志", "ExampleType4");
 
             string logFile2 = Environment.CurrentDirectory + @"\Log\SubLgoExample\Type2\LogTest2.txt";
